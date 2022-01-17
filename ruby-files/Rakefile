@@ -1,0 +1,36 @@
+require "rdoc/task"
+require "rake"
+
+task default: %w[build]
+
+task :build do
+  ruby "Tools/rpgscript.rb ./ ../"
+end
+
+task :build_iseq do
+  ruby "Tools/iseq_generator.rb"
+  pid = spawn("../lib/oneshot_itch")
+
+  Process.wait(pid)
+
+  puts "Iseqing done!"
+  ruby "Tools/iseqscript.rb ./"
+end
+
+task :build_debug do
+  ruby "Tools/dbgscript.rb ./ ../"
+end
+
+task test: %w[build] do
+  pid = spawn(["../lib/oneshot_itch", "2>&1"])
+  Process.wait(pid)
+end
+
+task test_debug: %w[build_debug] do
+  pid = spawn(["../lib/oneshot_itch", "2>&1"])
+end
+
+RDoc::Task.new do |rdoc|
+  rdoc.main = "README.doc"
+  rdoc.rdoc_dir = "../docs"
+end
