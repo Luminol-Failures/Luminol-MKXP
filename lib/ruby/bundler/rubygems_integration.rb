@@ -12,32 +12,30 @@ module Bundler
       EXT_LOCK = Monitor.new
     end
 
-    def self.version
-      @version ||= Gem::Version.new(Gem::VERSION)
-    end
-
-    def self.provides?(req_str)
-      Gem::Requirement.new(req_str).satisfied_by?(version)
-    end
-
     def initialize
       @replaced_methods = {}
       backport_ext_builder_monitor
     end
 
     def version
-      self.class.version
+      @version ||= Gem.rubygems_version
     end
 
     def provides?(req_str)
-      self.class.provides?(req_str)
+      Gem::Requirement.new(req_str).satisfied_by?(version)
+    end
+
+    def supports_bundler_trampolining?
+      provides?(">= 3.3.0.a")
     end
 
     def build_args
+      require "rubygems/command"
       Gem::Command.build_args
     end
 
     def build_args=(args)
+      require "rubygems/command"
       Gem::Command.build_args = args
     end
 
@@ -84,14 +82,10 @@ module Bundler
     def spec_missing_extensions?(spec, default = true)
       return spec.missing_extensions? if spec.respond_to?(:missing_extensions?)
 
-      return false if spec_default_gem?(spec)
+      return false if spec.default_gem?
       return false if spec.extensions.empty?
 
       default
-    end
-
-    def spec_default_gem?(spec)
-      spec.respond_to?(:default_gem?) && spec.default_gem?
     end
 
     def spec_matches_for_glob(spec, glob)
@@ -117,7 +111,7 @@ module Bundler
       Bundler.ui.error "#{e.class}: #{e.message}"
       Bundler.ui.trace e
       raise
-    rescue YamlLibrarySyntaxError => e
+    rescue ::Psych::SyntaxError => e
       raise YamlSyntaxError.new(e, "Your RubyGems configuration, which is " \
         "usually located in ~/.gemrc, contains invalid YAML syntax.")
     end
@@ -142,19 +136,6 @@ module Bundler
       else
         path
       end
-    end
-
-    def sources=(val)
-      # Gem.configuration creates a new Gem::ConfigFile, which by default will read ~/.gemrc
-      # If that file exists, its settings (including sources) will overwrite the values we
-      # are about to set here. In order to avoid that, we force memoizing the config file now.
-      configuration
-
-      Gem.sources = val
-    end
-
-    def sources
-      Gem.sources
     end
 
     def gem_dir
@@ -232,18 +213,6 @@ module Bundler
 
     def ext_lock
       EXT_LOCK
-    end
-
-    def with_build_args(args)
-      ext_lock.synchronize do
-        old_args = build_args
-        begin
-          self.build_args = args
-          yield
-        ensure
-          self.build_args = old_args
-        end
-      end
     end
 
     def spec_from_gem(path, policy = nil)
@@ -502,14 +471,15 @@ module Bundler
     end
 
     def fetch_specs(remote, name)
+      require "rubygems/remote_fetcher"
       path = remote.uri.to_s + "#{name}.#{Gem.marshal_version}.gz"
       fetcher = gem_remote_fetcher
       fetcher.headers = { "X-Gemfile-Source" => remote.original_uri.to_s } if remote.original_uri
       string = fetcher.fetch_path(path)
       Bundler.load_marshal(string)
-    rescue Gem::RemoteFetcher::FetchError => e
+    rescue Gem::RemoteFetcher::FetchError
       # it's okay for prerelease to fail
-      raise e unless name == "prerelease_specs"
+      raise unless name == "prerelease_specs"
     end
 
     def fetch_all_remote_specs(remote)
@@ -519,12 +489,32 @@ module Bundler
       specs.concat(pres)
     end
 
-    def download_gem(spec, uri, path)
+    def download_gem(spec, uri, cache_dir)
+      require "rubygems/remote_fetcher"
       uri = Bundler.settings.mirror_for(uri)
       fetcher = gem_remote_fetcher
       fetcher.headers = { "X-Gemfile-Source" => spec.remote.original_uri.to_s } if spec.remote.original_uri
       Bundler::Retry.new("download gem from #{uri}").attempts do
-        fetcher.download(spec, uri, path)
+        gem_file_name = spec.file_name
+        local_gem_path = File.join cache_dir, gem_file_name
+        return if File.exist? local_gem_path
+
+        begin
+          remote_gem_path = uri + "gems/#{gem_file_name}"
+          remote_gem_path = remote_gem_path.to_s if provides?("< 3.2.0.rc.1")
+
+          SharedHelpers.filesystem_access(local_gem_path) do
+            fetcher.cache_update_path remote_gem_path, local_gem_path
+          end
+        rescue Gem::RemoteFetcher::FetchError
+          raise if spec.original_platform == spec.platform
+
+          original_gem_file_name = "#{spec.original_name}.gem"
+          raise if gem_file_name == original_gem_file_name
+
+          gem_file_name = original_gem_file_name
+          retry
+        end
       end
     rescue Gem::RemoteFetcher::FetchError => e
       raise Bundler::HTTPError, "Could not download gem from #{uri} due to underlying error <#{e.message}>"
@@ -550,10 +540,6 @@ module Bundler
 
     def repository_subdirectories
       Gem::REPOSITORY_SUBDIRECTORIES
-    end
-
-    def install_with_build_args(args)
-      yield
     end
 
     def path_separator
@@ -585,6 +571,10 @@ module Bundler
       end
     end
 
+    def find_bundler(version)
+      find_name("bundler").find {|s| s.version.to_s == version }
+    end
+
     def find_name(name)
       Gem::Specification.stubs_for(name).map(&:to_spec)
     end
@@ -597,14 +587,6 @@ module Bundler
       def default_stubs
         Gem::Specification.send(:default_stubs, "*.gemspec")
       end
-    end
-
-    def use_gemdeps(gemfile)
-      ENV["BUNDLE_GEMFILE"] ||= File.expand_path(gemfile)
-      require_relative "gemdeps"
-      runtime = Bundler.setup
-      activated_spec_names = runtime.requested_specs.map(&:to_spec).sort_by(&:name)
-      [Gemdeps.new(runtime), activated_spec_names]
     end
   end
 

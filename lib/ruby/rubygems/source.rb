@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rubygems/text"
+require_relative "text"
 ##
 # A Source knows how to list and fetch gems from a RubyGems marshal index.
 #
@@ -35,6 +35,7 @@ class Gem::Source
     end
 
     @uri = uri
+    @update_cache = nil
   end
 
   ##
@@ -118,7 +119,8 @@ class Gem::Source
   # Returns true when it is possible and safe to update the cache directory.
 
   def update_cache?
-    @update_cache ||=
+    return @update_cache unless @update_cache.nil?
+    @update_cache =
       begin
         File.stat(Gem.user_home).uid == Process.uid
       rescue Errno::ENOENT
@@ -238,9 +240,9 @@ class Gem::Source
   end
 end
 
-require 'rubygems/source/git'
-require 'rubygems/source/installed'
-require 'rubygems/source/specific_file'
-require 'rubygems/source/local'
-require 'rubygems/source/lock'
-require 'rubygems/source/vendor'
+require_relative 'source/git'
+require_relative 'source/installed'
+require_relative 'source/specific_file'
+require_relative 'source/local'
+require_relative 'source/lock'
+require_relative 'source/vendor'

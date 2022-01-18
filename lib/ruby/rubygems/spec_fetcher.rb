@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-require 'rubygems/remote_fetcher'
-require 'rubygems/user_interaction'
-require 'rubygems/errors'
-require 'rubygems/text'
-require 'rubygems/name_tuple'
+require_relative 'remote_fetcher'
+require_relative 'user_interaction'
+require_relative 'errors'
+require_relative 'text'
+require_relative 'name_tuple'
 
 ##
 # SpecFetcher handles metadata updates from remote gem repositories.
@@ -121,7 +121,7 @@ class Gem::SpecFetcher
       end
     end
 
-    tuples = tuples.sort_by {|x| x[0] }
+    tuples = tuples.sort_by {|x| x[0].version }
 
     return [tuples, errors]
   end

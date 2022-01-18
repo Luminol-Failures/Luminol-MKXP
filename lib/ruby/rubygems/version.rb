@@ -149,6 +149,8 @@
 # For the last example, single-digit versions are automatically extended with
 # a zero to give a sensible result.
 
+require_relative "deprecate"
+
 class Gem::Version
   autoload :Requirement, File.expand_path('requirement', __dir__)
 

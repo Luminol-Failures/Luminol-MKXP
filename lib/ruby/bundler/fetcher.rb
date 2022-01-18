@@ -28,7 +28,8 @@ module Bundler
           " is a chance you are experiencing a man-in-the-middle attack, but" \
           " most likely your system doesn't have the CA certificates needed" \
           " for verification. For information about OpenSSL certificates, see" \
-          " http://bit.ly/ruby-ssl. To connect without using SSL, edit your Gemfile" \
+          " https://railsapps.github.io/openssl-certificate-verify-failed.html." \
+          " To connect without using SSL, edit your Gemfile" \
           " sources and change 'https' to 'http'."
       end
     end
@@ -70,8 +71,8 @@ module Bundler
                   :HTTPUnsupportedMediaType, :HTTPVersionNotSupported].freeze
     FAIL_ERRORS = begin
       fail_errors = [AuthenticationRequiredError, BadAuthenticationError, FallbackError]
-      fail_errors << Gem::Requirement::BadRequirementError if defined?(Gem::Requirement::BadRequirementError)
-      fail_errors.concat(NET_ERRORS.map {|e| SharedHelpers.const_get_safely(e, Net) }.compact)
+      fail_errors << Gem::Requirement::BadRequirementError
+      fail_errors.concat(NET_ERRORS.map {|e| Net.const_get(e) })
     end.freeze
 
     class << self
@@ -121,7 +122,6 @@ module Bundler
 
     # return the specs in the bundler format as an index
     def specs(gem_names, source)
-      old = Bundler.rubygems.sources
       index = Bundler::Index.new
 
       if Bundler::Fetcher.disable_endpoint
@@ -152,8 +152,6 @@ module Bundler
     rescue CertificateFailureError
       Bundler.ui.info "" if gem_names && use_api # newline after dots
       raise
-    ensure
-      Bundler.rubygems.sources = old
     end
 
     def use_api

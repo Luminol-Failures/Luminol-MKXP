@@ -9,25 +9,25 @@
 # lost the next time ruby is built.
 
 module RbConfig
-  RUBY_VERSION.start_with?("3.0.") or
-    raise "ruby lib version (3.0.2) doesn't match executable version (#{RUBY_VERSION})"
+  RUBY_VERSION.start_with?("3.1.") or
+    raise "ruby lib version (3.1.0) doesn't match executable version (#{RUBY_VERSION})"
 
   # Ruby installed directory.
-  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/3.0.0/x64-mswin64_140")
+  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/3.1.0/x64-mswin64_140")
   # DESTDIR on make install.
   DESTDIR = TOPDIR && TOPDIR[/\A[a-z]:/i] || '' unless defined? DESTDIR
   # The hash configurations stored.
   CONFIG = {}
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "3"
-  CONFIG["MINOR"] = "0"
-  CONFIG["TEENY"] = "2"
-  CONFIG["PATCHLEVEL"] = "107"
-  CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/.conan/.conan/data/ruby/3.0.2/astrabit/testing/package/aee3a365ab177310c562515adebaa1b4c4baf9ae")
+  CONFIG["MINOR"] = "1"
+  CONFIG["TEENY"] = "0"
+  CONFIG["PATCHLEVEL"] = "0"
+  CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/.conan/.conan/data/ruby/3.1.0/astrabit/testing/package/aee3a365ab177310c562515adebaa1b4c4baf9ae")
   CONFIG["EXEEXT"] = ".exe"
   CONFIG["ruby_install_name"] = "ruby"
   CONFIG["RUBY_INSTALL_NAME"] = "ruby"
-  CONFIG["RUBY_SO_NAME"] = "x64-vcruntime140-ruby300"
+  CONFIG["RUBY_SO_NAME"] = "x64-vcruntime140-ruby310"
   CONFIG["SHELL"] = "$(COMSPEC)"
   CONFIG["BUILD_FILE_SEPARATOR"] = "\\"
   CONFIG["PATH_SEPARATOR"] = ";"
@@ -39,7 +39,7 @@ module RbConfig
   CONFIG["FFLAGS"] = ""
   CONFIG["LDFLAGS"] = "-incremental:no -debug -opt:ref -opt:icf"
   CONFIG["LIBS"] = "user32.lib"
-  CONFIG["MAINLIBS"] = "user32.lib advapi32.lib shell32.lib ws2_32.lib iphlpapi.lib imagehlp.lib shlwapi.lib "
+  CONFIG["MAINLIBS"] = "user32.lib advapi32.lib shell32.lib ws2_32.lib iphlpapi.lib imagehlp.lib shlwapi.lib bcrypt.lib "
   CONFIG["exec_prefix"] = "$(prefix)"
   CONFIG["program_transform_name"] = "s,.*,&,"
   CONFIG["bindir"] = "$(exec_prefix)/bin"
@@ -88,7 +88,6 @@ module RbConfig
   CONFIG["RMALL"] = "$(COMSPEC) /C $(top_srcdir:/=\\)\\win32\\rm.bat -f -r"
   CONFIG["MAKEDIRS"] = "$(COMSPEC) /E:ON /C $(top_srcdir:/=\\)\\win32\\makedirs.bat"
   CONFIG["ALLOCA"] = ""
-  CONFIG["DEFAULT_KCODE"] = ""
   CONFIG["EXECUTABLE_EXTS"] = ".exe .com .cmd .bat"
   CONFIG["OBJEXT"] = "obj"
   CONFIG["ASMEXT"] = "asm"
@@ -102,6 +101,7 @@ module RbConfig
   CONFIG["DLEXT"] = "so"
   CONFIG["LIBEXT"] = "lib"
   CONFIG["STRIP"] = ""
+  CONFIG["ENCSTATIC"] = ""
   CONFIG["EXTSTATIC"] = ""
   CONFIG["setup"] = "Setup"
   CONFIG["PREP"] = "miniruby.exe"
@@ -153,7 +153,7 @@ module RbConfig
   CONFIG["sitearchincludedir"] = "$(includedir)/$(sitearch)"
   CONFIG["arch"] = "x64-mswin64_140"
   CONFIG["sitearch"] = "x64-vcruntime140"
-  CONFIG["ruby_version"] = "3.0.0"
+  CONFIG["ruby_version"] = "3.1.0"
   CONFIG["RUBY_PROGRAM_VERSION"] = "$(MAJOR).$(MINOR).$(TEENY)"
   CONFIG["RUBY_API_VERSION"] = "$(MAJOR).$(MINOR)"
   CONFIG["rubylibprefix"] = "$(prefix)/lib/$(RUBY_BASE_NAME)"
@@ -173,12 +173,13 @@ module RbConfig
   CONFIG["vendorarchhdrdir"] = "$(vendorhdrdir)/$(sitearch)"
   CONFIG["PLATFORM_DIR"] = "win32"
   CONFIG["THREAD_MODEL"] = "win32"
-  CONFIG["configure_args"] = "--with-make-prog=nmake --enable-shared --prefix=C:\\.conan\\.conan\\data\\ruby\\3.0.2\\astrabit\\testing\\package\\aee3a365ab177310c562515adebaa1b4c4baf9ae --target=x64-mswin64 --without-ext=\"dbm,gdbm,pty,readline,syslog,\"--disable-install-doc"
+  CONFIG["configure_args"] = "--with-make-prog=nmake --enable-shared --prefix=C:\\.conan\\.conan\\data\\ruby\\3.1.0\\astrabit\\testing\\package\\aee3a365ab177310c562515adebaa1b4c4baf9ae --target=x64-mswin64 --without-ext=\"dbm,gdbm,pty,readline,syslog,\" --disable-install-doc"
   CONFIG["try_header"] = "try_compile"
-  CONFIG["ruby_pc"] = "ruby-3.0.pc"
+  CONFIG["ruby_pc"] = "ruby-3.1.pc"
   CONFIG["MJIT_SUPPORT"] = "yes"
-  CONFIG["UNICODE_VERSION"] = "12.1.0"
-  CONFIG["UNICODE_EMOJI_VERSION"] = "12.1"
+  CONFIG["UNICODE_VERSION"] = "13.0.0"
+  CONFIG["UNICODE_EMOJI_VERSION"] = "13.1"
+  CONFIG["platform"] = "$(arch)"
   CONFIG["archdir"] = "$(rubyarchdir)"
   CONFIG["topdir"] = File.dirname(__FILE__)
   # Almost same with CONFIG. MAKEFILE_CONFIG has other variable

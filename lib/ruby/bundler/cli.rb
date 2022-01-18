@@ -14,6 +14,7 @@ module Bundler
     COMMAND_ALIASES = {
       "check" => "c",
       "install" => "i",
+      "plugin" => "",
       "list" => "ls",
       "exec" => ["e", "ex", "exe"],
       "cache" => ["package", "pack"],
@@ -60,6 +61,8 @@ module Bundler
         Bundler.reset_settings_and_root!
       end
 
+      Bundler.self_manager.restart_with_locked_bundler_if_needed
+
       Bundler.settings.set_command_option_if_given :retry, options[:retry]
 
       current_cmd = args.last[:current_command].name
@@ -72,14 +75,6 @@ module Bundler
       Bundler.ui = UI::Shell.new(options)
       Bundler.ui.level = "debug" if options["verbose"]
       unprinted_warnings.each {|w| Bundler.ui.warn(w) }
-
-      if ENV["RUBYGEMS_GEMDEPS"] && !ENV["RUBYGEMS_GEMDEPS"].empty?
-        Bundler.ui.warn(
-          "The RUBYGEMS_GEMDEPS environment variable is set. This enables RubyGems' " \
-          "experimental Gemfile mode, which may conflict with Bundler and cause unexpected errors. " \
-          "To remove this warning, unset RUBYGEMS_GEMDEPS.", :wrap => true
-        )
-      end
     end
 
     check_unknown_options!(:except => [:config, :exec])
@@ -191,6 +186,7 @@ module Bundler
     method_option "install", :type => :boolean, :banner =>
       "Runs 'bundle install' after removing the gems from the Gemfile"
     def remove(*gems)
+      SharedHelpers.major_deprecation(2, "The `--install` flag has been deprecated. `bundle install` is triggered by default.") if ARGV.include?("--install")
       require_relative "cli/remove"
       Remove.new(gems, options).run
     end
@@ -337,6 +333,7 @@ module Bundler
 
     desc "info GEM [OPTIONS]", "Show information for the given gem"
     method_option "path", :type => :boolean, :banner => "Print full path to gem"
+    method_option "version", :type => :boolean, :banner => "Print gem version"
     def info(gem_name)
       require_relative "cli/info"
       Info.new(options, gem_name).run
@@ -372,8 +369,11 @@ module Bundler
     method_option "version", :aliases => "-v", :type => :string
     method_option "group", :aliases => "-g", :type => :string
     method_option "source", :aliases => "-s", :type => :string
+    method_option "require", :aliases => "-r", :type => :string, :banner => "Adds require path to gem. Provide false, or a path as a string."
     method_option "git", :type => :string
+    method_option "github", :type => :string
     method_option "branch", :type => :string
+    method_option "ref", :type => :string
     method_option "skip-install", :type => :boolean, :banner =>
       "Adds gem to the Gemfile but does not install it"
     method_option "optimistic", :type => :boolean, :banner => "Adds optimistic declaration of version to gem"
@@ -455,6 +455,12 @@ module Bundler
         "do in future versions. Instead please use `bundle config set cache_all true`, " \
         "and stop using this flag" if ARGV.include?("--all")
 
+      SharedHelpers.major_deprecation 2,
+        "The `--path` flag is deprecated because its semantics are unclear. " \
+        "Use `bundle config cache_path` to configure the path of your cache of gems, " \
+        "and `bundle config path` to configure the path where your gems are installed, " \
+        "and stop using this flag" if ARGV.include?("--path")
+
       require_relative "cli/cache"
       Cache.new(options).run
     end
@@ -462,7 +468,7 @@ module Bundler
     map aliases_for("cache")
 
     desc "exec [OPTIONS]", "Run the command in context of the bundle"
-    method_option :keep_file_descriptors, :type => :boolean, :default => false
+    method_option :keep_file_descriptors, :type => :boolean, :default => true
     method_option :gemfile, :type => :string, :required => false
     long_desc <<-D
       Exec runs a command, providing it access to the gems in the bundle. While using
@@ -470,6 +476,10 @@ module Bundler
       into the system wide RubyGems repository.
     D
     def exec(*args)
+      if ARGV.include?("--no-keep-file-descriptors")
+        SharedHelpers.major_deprecation(2, "The `--no-keep-file-descriptors` has been deprecated. `bundle exec` no longer mess with your file descriptors. Close them in the exec'd script if you need to")
+      end
+
       require_relative "cli/exec"
       Exec.new(options, args).run
     end
@@ -548,7 +558,7 @@ module Bundler
       method_option :version, :type => :boolean, :default => false, :aliases => "-v", :desc => "Set to show each gem version."
       method_option :without, :type => :array, :default => [], :aliases => "-W", :banner => "GROUP[ GROUP...]", :desc => "Exclude gems that are part of the specified named group."
       def viz
-        SharedHelpers.major_deprecation 2, "The `viz` command has been moved to the `bundle-viz` gem, see https://github.com/bundler/bundler-viz"
+        SharedHelpers.major_deprecation 2, "The `viz` command has been renamed to `graph` and moved to a plugin. See https://github.com/rubygems/bundler-graph"
         require_relative "cli/viz"
         Viz.new(options.dup).run
       end
@@ -571,6 +581,8 @@ module Bundler
                          :desc => "Generate a test directory for your library, either rspec, minitest or test-unit. Set a default with `bundle config set --global gem.test (rspec|minitest|test-unit)`."
     method_option :ci, :type => :string, :lazy_default => Bundler.settings["gem.ci"] || "",
                        :desc => "Generate CI configuration, either GitHub Actions, Travis CI, GitLab CI or CircleCI. Set a default with `bundle config set --global gem.ci (github|travis|gitlab|circle)`"
+    method_option :linter, :type => :string, :lazy_default => Bundler.settings["gem.linter"] || "",
+                           :desc => "Add a linter and code formatter, either RuboCop or Standard. Set a default with `bundle config set --global gem.linter (rubocop|standard)`"
     method_option :github_username, :type => :string, :default => Bundler.settings["gem.github_username"], :banner => "Set your username on GitHub", :desc => "Fill in GitHub username on README so that you don't have to do it manually. Set a default with `bundle config set --global gem.github_username <your_username>`."
 
     def gem(name)

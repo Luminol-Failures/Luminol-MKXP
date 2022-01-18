@@ -8,9 +8,11 @@ module Bundler
     end
 
     def run
-      Bundler.ui.level = "error" if options[:quiet]
+      Bundler.ui.level = "warn" if options[:quiet]
 
       warn_if_root
+
+      Bundler.self_manager.install_locked_bundler_and_restart_with_it_if_needed
 
       Bundler::SharedHelpers.set_env "RB_USER_INSTALL", "1" if Bundler::FREEBSD
 
@@ -60,7 +62,7 @@ module Bundler
       installer = Installer.install(Bundler.root, definition, options)
 
       Bundler.settings.temporary(:cache_all_platforms => options[:local] ? false : Bundler.settings[:cache_all_platforms]) do
-        Bundler.load.cache if Bundler.app_cache.exist? && !options["no-cache"] && !Bundler.frozen_bundle?
+        Bundler.load.cache(nil, options[:local]) if Bundler.app_cache.exist? && !options["no-cache"] && !Bundler.frozen_bundle?
       end
 
       Bundler.ui.confirm "Bundle complete! #{dependencies_count_for(definition)}, #{gems_installed_for(definition)}."
@@ -83,22 +85,9 @@ module Bundler
       end
 
       Bundler::CLI::Common.output_fund_metadata_summary
-    rescue GemNotFound, VersionConflict => e
-      if options[:local] && Bundler.app_cache.exist?
-        Bundler.ui.warn "Some gems seem to be missing from your #{Bundler.settings.app_cache_path} directory."
-      end
-
-      unless Bundler.definition.has_rubygems_remotes?
-        Bundler.ui.warn <<-WARN, :wrap => true
-          Your Gemfile has no gem server sources. If you need gems that are \
-          not already on your machine, add a line like this to your Gemfile:
-          source 'https://rubygems.org'
-        WARN
-      end
-      raise e
-    rescue Gem::InvalidSpecificationException => e
+    rescue Gem::InvalidSpecificationException
       Bundler.ui.warn "You have one or more invalid gemspecs that need to be fixed."
-      raise e
+      raise
     end
 
     private
@@ -176,9 +165,6 @@ module Bundler
 
     def normalize_settings
       Bundler.settings.set_command_option :path, nil if options[:system]
-      Bundler.settings.temporary(:path_relative_to_cwd => false) do
-        Bundler.settings.set_command_option :path, "vendor/bundle" if Bundler.settings[:deployment] && Bundler.settings[:path].nil?
-      end
       Bundler.settings.set_command_option_if_given :path, options[:path]
       Bundler.settings.temporary(:path_relative_to_cwd => false) do
         Bundler.settings.set_command_option :path, "bundle" if options["standalone"] && Bundler.settings[:path].nil?

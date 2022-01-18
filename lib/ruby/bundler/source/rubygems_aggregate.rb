@@ -16,6 +16,10 @@ module Bundler
         @index
       end
 
+      def identifier
+        to_s
+      end
+
       def to_s
         "any of the sources"
       end
