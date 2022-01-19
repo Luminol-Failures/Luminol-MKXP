@@ -13,9 +13,9 @@ class BaseSignal
     return @@subscribers.delete_at(subscriber)
   end
 
-  def notify(*args)
+  def self.notify(*args)
     @@subscribers.each do |subscriber|
-      subscriber.notify(args)
+      subscriber.call(args)
     end
   end
 end

@@ -6,6 +6,10 @@ class Scene_MapEdit
     Graphics.transition(40)
 
     @testwindow = Window_Base.new(0, 0, 640, 480)
+    @testwindow.on_resize do |x, y|
+      @testwindow.width = x
+      @testwindow.height = y
+    end
 
     loop do
       Graphics.update

@@ -15,8 +15,8 @@ class Window_Base < Window
     end)
   end
 
-  def do_resize(&block)
-    ResizeSignal.subscribe(block)
+  def on_resize(&block)
+    ResizeSignal << block
   end
 
   def update
