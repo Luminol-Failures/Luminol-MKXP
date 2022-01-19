@@ -1,9 +1,10 @@
 require_relative "base"
 
-module SkinSignal
-  include Signal_Base
-
+class SkinSignal < BaseSignal
   def self.notify_change(skin)
     notify(skin)
+  end
+
+  def update
   end
 end

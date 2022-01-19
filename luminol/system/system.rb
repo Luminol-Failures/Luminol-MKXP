@@ -1,5 +1,6 @@
 require_relative "assets"
 require_relative "../subscribers/skin"
+require_relative "../subscribers/resize"
 
 class System
   attr_accessor :working_dir
@@ -19,6 +20,7 @@ class System
   end
 
   def update
+    ResizeSignal.update
   end
 
   def windowskin

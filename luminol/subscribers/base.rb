@@ -1,21 +1,21 @@
-module Signal_Base
-  @subscribers = []
+class BaseSignal
+  @@subscribers = []
 
   def self.<<(subscriber)
-    @subscribers << subscriber
+    @@subscribers << subscriber
   end
 
   def self.pop
-    return @subscribers.pop
+    return @@subscribers.pop
   end
 
   def self.>>(subscriber)
-    return @subscribers.delete_at(subscriber)
+    return @@subscribers.delete_at(subscriber)
   end
 
-  def notify(event)
-    @subscribers.each do |subscriber|
-      subscriber.notify(event)
+  def notify(*args)
+    @@subscribers.each do |subscriber|
+      subscriber.notify(args)
     end
   end
 end
