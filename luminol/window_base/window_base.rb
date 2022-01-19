@@ -10,9 +10,9 @@ class Window_Base < Window
     self.width = width
     self.height = height
 
-    SkinSignal << (Proc.new do |skin|
+    SkinSignal.on_call do |skin|
       self.windowskin = $system.windowskin
-    end)
+    end
   end
 
   def on_resize(&block)

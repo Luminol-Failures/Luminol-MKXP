@@ -1,6 +1,10 @@
 class BaseSignal
   @@subscribers = []
 
+  def self.on_call(&subscriber)
+    @@subscribers << subscriber
+  end
+
   def self.<<(subscriber)
     @@subscribers << subscriber
   end
