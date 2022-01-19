@@ -2,23 +2,14 @@ module RPG
   module Cache
     @cache = {}
     def self.load_bitmap(folder_name, filename = " ", hue = 0)
+      hue %= 360
+
       if filename != " "
-        path = folder_name + filename
+        path = $system.working_dir + folder_name + filename
       else
-        path = folder_name
+        path = $system.working_dir + folder_name
       end
 
-      if Resourcepack_Cache.cache.key?(path)
-        path = Resourcepack_Cache.cache[path]
-      end
-
-      if filename != " "
-        if !File.exists?("#{path}.png") && !File.exists?("#{path}") && !path.match(/Lightmaps/)
-          print("Unable to find #{path}.png because Pancakes was an idiot")
-          Crash_Handler.logMissingFile path + ".png"
-          path = "Graphics/Faces/placeholder.png"
-        end
-      end
       if not @cache.include?(path) or @cache[path].disposed?
         if filename != ""
           @cache[path] = Bitmap.new(path)
