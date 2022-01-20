@@ -4,6 +4,7 @@ require_relative "luminol/system/system"
 require_relative "luminol/scenes/scene_mapedit"
 
 working_dir = "D:/Git/OSFM-GitHub"
+Font.default_name = "Terminus (TTF)"
 $system = System.new
 $system.working_dir = working_dir
 

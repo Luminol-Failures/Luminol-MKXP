@@ -15,24 +15,12 @@ class DrawInstructions
         @instructions[id] = TextInstruction.new(options[:text], options[:x], options[:y])
       end
     when "color"
-      if options[:rect].is_a?(Rect)
-        @instructions[id] = ColorInstruction.new(options[:rect], options[:color])
-      else
-        @instructions[id] = ColorInstruction.new(options[:x], options[:y], options[:width], options[:height], options[:color])
-      end
+      @instructions[id] = ColorInstruction.new(options[:rect], options[:color])
     when "gradient"
-      if options[:rect].is_a?(Rect)
-        if options[:vertical].nil?
-          @instructions[id] = GradientInstruction.new(options[:rect], options[:color1], options[:color2])
-        else
-          @instructions[id] = GradientInstruction.new(options[:rect], options[:color1], options[:color2], options[:vertical])
-        end
+      if options[:vertical].nil?
+        @instructions[id] = GradientInstruction.new(options[:rect], options[:color1], options[:color2])
       else
-        if options[:vertical].nil?
-          @instructions[id] = GradientInstruction.new(options[:x], options[:y], options[:width], options[:height], options[:color1], options[:color2])
-        else
-          @instructions[id] = GradientInstruction.new(options[:x], options[:y], options[:width], options[:height], options[:color1], options[:color2], options[:vertical])
-        end
+        @instructions[id] = GradientInstruction.new(options[:rect], options[:color1], options[:color2], options[:vertical])
       end
     when "font"
       @instructions[id] = FontInstruction.new(options)
@@ -46,7 +34,7 @@ class DrawInstructions
   # Draw will modify the bitmap
   def draw(bitmap)
     bitmap.clear
-    @instructions.each { |instruction| instruction.draw(bitmap) }
+    @instructions.each { |id, instruction| instruction.draw(bitmap) }
     return bitmap
   end
 

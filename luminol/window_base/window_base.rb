@@ -34,8 +34,8 @@ class Window_Base < Window
     @draw_instructions.draw(self.contents)
   end
 
-  def draw(type, options = {})
-    @draw_instructions.add(type, options)
+  def on_draw(type, id, options = {})
+    @draw_instructions.add(type, id, options)
   end
 
   def update
