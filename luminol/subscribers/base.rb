@@ -3,10 +3,12 @@ class BaseSignal
 
   def self.on_call(&subscriber)
     @@subscribers << subscriber
+    return @@subscribers.length - 1
   end
 
   def self.<<(subscriber)
     @@subscribers << subscriber
+    return @@subscribers.length - 1
   end
 
   def self.pop
