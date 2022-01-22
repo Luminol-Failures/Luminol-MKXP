@@ -1,10 +1,10 @@
 class Button
   def initialize(rect, type, options = {})
     @rect = rect
-    @type = type
     @state = false
     @selected = false
     @options = options
+    @type = type
   end
 
   def update
@@ -32,7 +32,25 @@ class Button
   end
 
   def draw(bitmap)
-    icon = $system.button(@type)
+    icon_type = :_
+    case @type
+    when :normal
+      if @state
+        icon_type = :pressed
+      else
+        icon_type = :unpressed
+      end
+    when :radio || :radio_pressed
+      if @state
+        icon_type = :radio_pressed
+      else
+        icon_type = :radio_unpressed
+      end
+    when :file
+      icon_type = :file
+    end
+
+    icon = $system.button(icon_type)
     opacity = @options[:opacity]
     opacity ||= 255
     bitmap.stretch_blt(@rect, icon, Rect.new(0, 0, icon.width, icon.height), opacity)
@@ -40,6 +58,10 @@ class Button
 
   def state
     return @state
+  end
+
+  def state=(state)
+    @state = state
   end
 
   def selected?

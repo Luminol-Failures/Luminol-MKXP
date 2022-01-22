@@ -32,7 +32,7 @@ class Scene_MapEdit
     )
     @testwindow.add_widget(
       :button,
-      Button.new(Rect.new(48, 64, 64, 64), :unpressed)
+      Button.new(Rect.new(48, 64, 64, 64), :normal)
     )
     @testwindow.widget(:button).on_click do |state|
       @testwindow.on_draw :buttonfont, FontInstruction.new(
