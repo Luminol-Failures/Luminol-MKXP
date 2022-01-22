@@ -8,7 +8,7 @@ class Button
   end
 
   def update
-    unless MKXP.mouse_in_window
+    if MKXP.mouse_in_window
       x1 = @rect.x
       y1 = @rect.y
       x2 = @rect.x + @rect.width
@@ -46,7 +46,23 @@ class Button
     return @selected
   end
 
-  def on_push(&block)
+  def on_click(&block)
     @block = block
+  end
+
+  def width
+    return @rect.width
+  end
+
+  def height
+    return @rect.height
+  end
+
+  def x
+    return @rect.x
+  end
+
+  def y
+    return @rect.y
   end
 end

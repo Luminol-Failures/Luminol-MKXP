@@ -31,6 +31,7 @@ class Window_Base < Window
   def draw
     # Return if the bitmap is not set
     return if self.contents.nil?
+    self.contents.clear
     @draw_instructions.draw(self.contents)
   end
 

@@ -33,7 +33,6 @@ class DrawInstructions
 
   # Draw will modify the bitmap
   def draw(bitmap)
-    bitmap.clear
     @instructions.each { |id, instruction| instruction.draw(bitmap) }
     return bitmap
   end
