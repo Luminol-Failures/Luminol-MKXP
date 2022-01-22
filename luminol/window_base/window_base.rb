@@ -35,12 +35,17 @@ class Window_Base < Window
     @draw_instructions.draw(self.contents)
   end
 
-  def on_draw(type, id, options = {})
-    @draw_instructions.add(type, id, options)
+  def on_draw(id, options = {})
+    @draw_instructions.add(id, options)
   end
 
   def update
     super
+  end
+
+  def size=(size)
+    self.width = size[0]
+    self.height = size[1]
   end
 
   def self.text_color(n)

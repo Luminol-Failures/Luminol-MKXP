@@ -1,9 +1,10 @@
 class TextInstruction
-  def initialize(text, x, y, align = 0)
-    @text = text
-    @align = align
-    @x = x
-    @y = y
+  def initialize(options = {})
+    @text = options[:text]
+    @align = options[:align]
+    @align ||= 0
+    @x = options[:x]
+    @y = options[:y]
   end
 
   def draw(bitmap)

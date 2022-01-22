@@ -14,7 +14,7 @@ class System
     restore: 3,
     unpressed: 4,
     radio_pressed: 5,
-    unpressed: 6,
+    pressed: 6,
     file: 8,
   }
 

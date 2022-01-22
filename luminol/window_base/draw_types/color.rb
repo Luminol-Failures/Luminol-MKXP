@@ -1,12 +1,7 @@
 class ColorInstruction
-  def initialize(rect, color)
-    @rect = rect
-    @color = color
-  end
-
-  def initialize(x, y, width, height, color)
-    @rect = Rect.new(x, y, width, height)
-    @color = color
+  def initialize(options = {})
+    @rect = options[:rect]
+    @color = options[:color]
   end
 
   def draw(bitmap)

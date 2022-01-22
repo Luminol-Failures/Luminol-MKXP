@@ -1,9 +1,10 @@
 class GradientInstruction
-  def initialize(rect, color1, color2, vertical = false)
-    @rect = rect
-    @color1 = color1
-    @color2 = color2
-    @vertical = vertical
+  def initialize(options = {})
+    @rect = options[:rect]
+    @color1 = options[:color1]
+    @color2 = options[:color2]
+    @vertical = options[:vertical]
+    @vertical ||= false
   end
 
   def draw(bitmap)
