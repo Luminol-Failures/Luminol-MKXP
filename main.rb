@@ -2,17 +2,22 @@
 
 require_relative "luminol/system/system"
 require_relative "luminol/scenes/scene_mapedit"
+require_relative "luminol/system/crashhandler"
 
-working_dir = "D:/Git/OSFM-GitHub"
-Font.default_name = "Terminus (TTF)"
-$system = System.new
-$system.working_dir = working_dir
+begin
+  working_dir = "D:/Git/OSFM-GitHub"
+  Font.default_name = "Terminus (TTF)"
+  $system = System.new
+  $system.working_dir = working_dir
 
-Graphics.frame_rate = 60
+  Graphics.frame_rate = 60
 
-$scene = Scene_MapEdit.new
-while $scene != nil
-  $scene.main
+  $scene = Scene_MapEdit.new
+  while $scene != nil
+    $scene.main
+  end
+
+  print "Shutting down..."
+rescue NoMemoryError, ScriptError, StandardError => error
+  Crash_Handler.handle(error)
 end
-
-print "Shutting down..."
