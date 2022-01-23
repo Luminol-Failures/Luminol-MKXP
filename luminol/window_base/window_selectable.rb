@@ -19,7 +19,7 @@ class Window_Selectable < Window_Base
     super()
     widget_selected = false
     @widgets.each do |id, widget|
-      widget.update
+      widget.update(self)
 
       if widget.selected?
         widget_selected = true

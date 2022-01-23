@@ -1,4 +1,4 @@
-require_relative "../window_base/window_selectable"
+require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
 require_relative "../window_base/widgets/button"
 require_relative "../window_base/widgets/radio_button"
@@ -8,13 +8,19 @@ class Scene_MapEdit
     # Setup Scene
     Graphics.transition(40)
 
-    @testwindow = Window_Selectable.new(0, 0, Graphics.width, Graphics.height)
-    @testwindow.contents = Bitmap.new(@testwindow.width - 16, @testwindow.height - 16)
-    @testwindow.on_resize do |x, y|
-      @testwindow.size = [x, y]
-      @testwindow.contents = Bitmap.new(@testwindow.width - 16, @testwindow.height - 16)
-      @testwindow.draw
-    end
+    # Grab icon
+    icon = Bitmap.new(16, 16)
+    skin = $system.skin
+    icon.blt(0, 0, skin, Rect.new(192, 80, 16, 16))
+
+    @testwindow = Window_Draggable.new(0, 0, 480, 480, "Sound Test", icon)
+    @testwindow.contents = Bitmap.new(@testwindow.width, @testwindow.height)
+
+    #@testwindow.on_resize do |x, y|
+    #  @testwindow.size = [x, y]
+    #  @testwindow.contents = Bitmap.new(@testwindow.width - 16, @testwindow.height - 16)
+    #  @testwindow.draw
+    #end
 
     @testwindow.on_draw :gradient, GradientInstruction.new(
       rect: Rect.new(16, 16, 100, 24),

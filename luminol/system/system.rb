@@ -39,6 +39,10 @@ class System
     Assets.skin(@skin_name)
   end
 
+  def titlebar_element(index)
+    Assets.titlebar_element(@skin_name, index)
+  end
+
   def button(type)
     Assets.button(@skin_name, BUTTON_TYPES[type])
   end

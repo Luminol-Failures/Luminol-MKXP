@@ -7,7 +7,7 @@ class Button
     @type = type
   end
 
-  def update
+  def update(window)
     if MKXP.mouse_in_window
       x1 = @rect.x
       y1 = @rect.y

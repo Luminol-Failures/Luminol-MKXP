@@ -46,7 +46,7 @@ module Assets
       return @cache[key]
     end
 
-    def button(skin_name, hue = 0, id)
+    def button(skin_name, id, hue = 0)
       key = [skin_name + "_button", hue, id]
       return @cache[key] if @cache.include?(key) and not @cache[key].disposed?
 
@@ -56,6 +56,21 @@ module Assets
       y = 32 # Button start y
       x += 16 * (id % 4)  # Button x offset
       y += 16 * (id / 4)  # Button y offset
+      bitmap.blt(0, 0, skin, Rect.new(x, y, 16, 16))
+
+      @cache[key] = bitmap
+    end
+
+    def titlebar_element(skin_name, id, hue = 0)
+      key = [skin_name + "_titlebar", hue, id]
+      return @cache[key] if @cache.include?(key) and not @cache[key].disposed?
+
+      skin = self.skin(skin_name, hue)
+      bitmap = Bitmap.new(16, 16)
+      x = 192
+      y = 0
+      x += 16 * (id % 4)
+      y += 16 * (id / 4)
       bitmap.blt(0, 0, skin, Rect.new(x, y, 16, 16))
 
       @cache[key] = bitmap
