@@ -55,6 +55,8 @@ class Scene_MapEdit
     radio_array = []
     radio_array << RadioButton.new(Rect.new(48, 180, 64, 64), pressed: true, siblings: radio_array)
     radio_array << RadioButton.new(Rect.new(128, 180, 64, 64), siblings: radio_array)
+    radio_array << RadioButton.new(Rect.new(208, 180, 64, 64), siblings: radio_array)
+    radio_array << RadioButton.new(Rect.new(288, 180, 64, 64), siblings: radio_array)
     radio_proc = proc do |id|
       @testwindow.on_draw :radiofont, FontInstruction.new(
         name: "Terminus (TTF)",
@@ -66,16 +68,10 @@ class Scene_MapEdit
       @testwindow.on_draw :radiotext, TextInstruction.new(text: "Radio #{id} pressed", x: 48, y: 250)
       @testwindow.draw
     end
-    radio_array[0].on_click(&radio_proc)
-    radio_array[1].on_click(&radio_proc)
+    radio_array.each { |radio| radio.on_click(&radio_proc) }
     radio_proc.call(0)
 
-    radio_array.each_with_index do |r, i|
-      @testwindow.add_widget(
-        eval(":radio_#{i}"),
-        r
-      )
-    end
+    radio_array.each_with_index { |r, i| @testwindow.add_widget(eval(":radio_#{i}"), r) }
 
     @testwindow.draw
 
