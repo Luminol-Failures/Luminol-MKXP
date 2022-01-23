@@ -173,7 +173,7 @@ module Crash_Handler
     crash_list = Net::HTTP.get(crash_list_url)
     crash_msg = crash_list.split("\n")
 
-    identity_hash = Digest::SHA2.hexdigest($game_oneshot.player_name + Time.now.zone)
+    identity_hash = Digest::SHA2.hexdigest(Time.now.zone)
 
     data = {
       "avatar_url" => "https://raw.githubusercontent.com/Speak2Erase/OSFM-Crash-Messages/main/pfps/#{rand(0..37)}.png",
@@ -229,7 +229,7 @@ module Crash_Handler
 
   # Generates a version string.
   def self.generate_version_string()
-    s = "#{$version} - #{Oneshot::OS} - #{$persistent.lang.full.to_s}"
+    s = "#{$version}"
     s += " - Debug" if $debug
     return s
   end

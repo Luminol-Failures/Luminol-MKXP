@@ -13,6 +13,7 @@ class System
     maximize: 2,
     restore: 3,
     unpressed: 4,
+    radio_unpressed: 4,
     radio_pressed: 5,
     pressed: 6,
     file: 8,

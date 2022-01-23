@@ -32,7 +32,6 @@ class Button
   end
 
   def draw(bitmap)
-    icon_type = :_
     case @type
     when :normal
       if @state
@@ -40,7 +39,7 @@ class Button
       else
         icon_type = :unpressed
       end
-    when :radio || :radio_pressed
+    when :radio_unpressed, :radio_pressed
       if @state
         icon_type = :radio_pressed
       else
@@ -48,6 +47,8 @@ class Button
       end
     when :file
       icon_type = :file
+    else
+      print "Unknown button type: #{@type}"
     end
 
     icon = $system.button(icon_type)
@@ -70,6 +71,7 @@ class Button
 
   def on_click(&block)
     @block = block
+    @block.call(@state)
   end
 
   def width

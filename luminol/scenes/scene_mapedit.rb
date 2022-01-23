@@ -1,6 +1,7 @@
 require_relative "../window_base/window_selectable"
 require_relative "../window_base/draw_types/draw_types"
 require_relative "../window_base/widgets/button"
+require_relative "../window_base/widgets/radio_button"
 
 class Scene_MapEdit
   def main
@@ -34,7 +35,7 @@ class Scene_MapEdit
       :button,
       Button.new(Rect.new(48, 64, 64, 64), :normal)
     )
-    @testwindow.widget(:button).on_click do |state|
+    button_proc = proc do |state|
       @testwindow.on_draw :buttonfont, FontInstruction.new(
         name: "Cairo",
         size: 32,
@@ -47,6 +48,33 @@ class Scene_MapEdit
         @testwindow.on_draw :buttontext, TextInstruction.new(text: "Unpressed!", x: 48, y: 128)
       end
       @testwindow.draw
+    end
+    @testwindow.widget(:button).on_click(&button_proc)
+
+    # We can take advantage of the fact that adding an element to an array will not make a new object
+    radio_array = []
+    radio_array << RadioButton.new(Rect.new(48, 180, 64, 64), pressed: true, siblings: radio_array)
+    radio_array << RadioButton.new(Rect.new(128, 180, 64, 64), siblings: radio_array)
+    radio_proc = proc do |id|
+      @testwindow.on_draw :radiofont, FontInstruction.new(
+        name: "Terminus (TTF)",
+        size: 32,
+        color: Color.new(255, 255, 255),
+        align: 0,
+      )
+
+      @testwindow.on_draw :radiotext, TextInstruction.new(text: "Radio #{id} pressed", x: 48, y: 250)
+      @testwindow.draw
+    end
+    radio_array[0].on_click(&radio_proc)
+    radio_array[1].on_click(&radio_proc)
+    radio_proc.call(0)
+
+    radio_array.each_with_index do |r, i|
+      @testwindow.add_widget(
+        eval(":radio_#{i}"),
+        r
+      )
     end
 
     @testwindow.draw
