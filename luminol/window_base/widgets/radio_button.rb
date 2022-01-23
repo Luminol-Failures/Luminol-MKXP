@@ -16,10 +16,10 @@ class RadioButton < Button
 
   def update(window)
     if MKXP.mouse_in_window
-      x1 = @rect.x
-      y1 = @rect.y
-      x2 = @rect.x + @rect.width
-      y2 = @rect.y + @rect.height
+      x1 = @rect.x + window.x
+      y1 = @rect.y + window.y
+      x2 = @rect.x + @rect.width + window.x
+      y2 = @rect.y + @rect.height + window.y
 
       mx = Input.mouse_x
       my = Input.mouse_y
