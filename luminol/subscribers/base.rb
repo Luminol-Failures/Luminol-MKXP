@@ -27,7 +27,7 @@ class BaseSignal
     end
   end
 
-  def index_of(subscriber)
+  def index(subscriber)
     return @subscribers.index(subscriber)
   end
 end

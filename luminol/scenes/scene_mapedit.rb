@@ -78,6 +78,9 @@ class Scene_MapEdit
     @testwindow2 = Window_Draggable.new(256, 0, 480, 480, "2 window test", icon)
     @testwindow2.draw
 
+    @testwindow3 = Window_Draggable.new(512, 0, 480, 480, "3 window test", icon)
+    @testwindow3.draw
+
     loop do
       Graphics.update
       Input.update
@@ -99,5 +102,6 @@ class Scene_MapEdit
 
     @testwindow.update
     @testwindow2.update
+    @testwindow3.update
   end
 end

@@ -157,4 +157,11 @@ class Window_Draggable < Window_Selectable
 
     @titlebar.bitmap = bitmap
   end
+
+  def dispose
+    super
+    @titlebar.dispose
+    @titlebar = nil
+    $windowsignal >> $windowsignal.index(@drag_proc)
+  end
 end
