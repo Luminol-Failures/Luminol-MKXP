@@ -9,15 +9,10 @@ class Button
 
   def update(window)
     if MKXP.mouse_in_window
-      x1 = @rect.x + window.x
-      y1 = @rect.y + window.y
-      x2 = @rect.x + @rect.width + window.x
-      y2 = @rect.y + @rect.height + window.y
-
       mx = Input.mouse_x
       my = Input.mouse_y
 
-      @selected = (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) # Check if mouse is in button
+      @selected = inside_button?(window, mx, my) # Check if mouse is in button
 
       if @selected
         if Input.trigger?(Input::MOUSELEFT)
@@ -88,5 +83,14 @@ class Button
 
   def y
     return @rect.y
+  end
+
+  def inside_button?(window, x, y)
+    x1 = @rect.x + window.x
+    y1 = @rect.y + window.y
+    x2 = @rect.x + @rect.width + window.x
+    y2 = @rect.y + @rect.height + window.y
+
+    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end
