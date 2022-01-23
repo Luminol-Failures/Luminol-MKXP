@@ -1,6 +1,9 @@
 require_relative "window_selectable"
+require_relative "../subscribers/window"
 
 class Window_Draggable < Window_Selectable
+  attr_reader :dragging
+
   def initialize(x, y, width, height, title = "", icon = Bitmap.new(16, 16))
     super(x, y + 32, width, height)
     # We offset the window by 32 pixels to make room for the title bar
@@ -12,8 +15,24 @@ class Window_Draggable < Window_Selectable
     @drag_y = 0
 
     @titlebar = Sprite.new
+    @titlebar.x = self.x
+    @titlebar.y = self.y - 32
+
     @minimized = false
     @closed = false
+
+    self.z = 5 # Bring window to front of other windows that are not draggable
+    @titlebar.z = self.z
+
+    @other_window_dragging = false
+    @drag_proc = proc do |window|
+      next if window == self # Ignore if it's us
+      self.z = 5 if window.dragging
+      @titlebar.z = self.z
+      @other_window_dragging = window.dragging
+    end
+
+    $windowsignal.on_call(&@drag_proc)
   end
 
   def update
@@ -34,20 +53,21 @@ class Window_Draggable < Window_Selectable
     mx = Input.mouse_x
     my = Input.mouse_y
 
-    if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) || @dragging
-      x1 = self.x + self.width - 64 - 8
-      # Check if mouse is in titlebar buttons
-
+    if ((mx >= x1 && mx <= x2 && my >= y1 && my <= y2) || @dragging) && !@other_window_dragging
       if Input.trigger?(Input::MOUSELEFT)
         @dragging = true
         @drag_x = mx - self.x
         @drag_y = my - self.y
-        self.z += 1 # Bring window up a layer
+        self.z = 10 # Bring window to front of other windows that are draggable
         @titlebar.z = self.z
+        $windowsignal.notify_change(self)
       end
 
+      x1 = self.x + self.width - 64 - 8
+      # Check if mouse is in titlebar buttons
       if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2)
         @dragging = false
+        $windowsignal.notify_change(self)
 
         # Check if mouse is in close button
         x1 = self.x + self.width - 32 - 4
@@ -80,8 +100,10 @@ class Window_Draggable < Window_Selectable
 
         @titlebar.x = self.x
         @titlebar.y = self.y - 32
+        @titlebar.z = self.z
       else
         @dragging = false
+        $windowsignal.notify_change(self)
       end
     end
   end

@@ -1,27 +1,33 @@
 class BaseSignal
-  @@subscribers = []
-
-  def self.on_call(&subscriber)
-    @@subscribers << subscriber
-    return @@subscribers.length - 1
+  def initialize
+    @subscribers = []
   end
 
-  def self.<<(subscriber)
-    @@subscribers << subscriber
-    return @@subscribers.length - 1
+  def on_call(&subscriber)
+    @subscribers << subscriber
+    return @subscribers.length - 1
   end
 
-  def self.pop
-    return @@subscribers.pop
+  def <<(subscriber)
+    @subscribers << subscriber
+    return @subscribers.length - 1
   end
 
-  def self.>>(subscriber)
-    return @@subscribers.delete_at(subscriber)
+  def pop
+    return @subscribers.pop
   end
 
-  def self.notify(*args)
-    @@subscribers.each do |subscriber|
+  def >>(subscriber)
+    return @subscribers.delete_at(subscriber)
+  end
+
+  def notify(*args)
+    @subscribers.each do |subscriber|
       subscriber.call(args)
     end
+  end
+
+  def index_of(subscriber)
+    return @subscribers.index(subscriber)
   end
 end

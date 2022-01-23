@@ -75,5 +75,24 @@ module Assets
 
       @cache[key] = bitmap
     end
+
+    def cursor_skin(skin_name, hue = 0)
+      self.load_bitmap("assets/cursors/", skin_name, hue)
+    end
+
+    def cursor(skin_name, id, hue = 0)
+      key = [skin_name + "_cursor", hue, id]
+      return @cache[key] if @cache.include?(key) and not @cache[key].disposed?
+
+      skin = self.cursor_skin(skin_name, hue)
+      bitmap = Bitmap.new(16, 16)
+      x = 0
+      y = 0
+      x += 16 * (id % 4)
+      y += 16 * (id / 4)
+      bitmap.blt(0, 0, skin, Rect.new(x, y, 16, 16))
+
+      @cache[key] = bitmap
+    end
   end
 end

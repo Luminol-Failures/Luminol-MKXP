@@ -13,7 +13,7 @@ class Window_Base < Window
 
     @draw_instructions = DrawInstructions.new
 
-    SkinSignal.on_call do |skin|
+    $skinsignal.on_call do |skin|
       self.windowskin = $system.windowskin
     end
   end
@@ -21,10 +21,10 @@ class Window_Base < Window
   def on_resize(&block)
     if defined?(@id)
       # Remove the old subscriber
-      ResizeSignal >> @id
-      @id = ResizeSignal << block
+      $resizesignal >> @id
+      @id = $resizesignal << block
     else
-      @id = ResizeSignal << block
+      @id = $resizesignal << block
     end
   end
 

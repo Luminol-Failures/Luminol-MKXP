@@ -75,6 +75,9 @@ class Scene_MapEdit
 
     @testwindow.draw
 
+    @testwindow2 = Window_Draggable.new(256, 0, 480, 480, "2 window test", icon)
+    @testwindow2.draw
+
     loop do
       Graphics.update
       Input.update
@@ -92,6 +95,9 @@ class Scene_MapEdit
 
   def update
     $system.update
+    $cursor.update
+
     @testwindow.update
+    @testwindow2.update
   end
 end

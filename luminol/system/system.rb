@@ -19,20 +19,44 @@ class System
     file: 8,
   }
 
+  CURSOR_TYPES = {
+    upright: 0,
+    up: 1,
+    upleft: 2,
+    question: 3,
+    #
+    left: 4,
+    normal: 5,
+    right: 6,
+    stop: 7,
+    #
+    downleft: 8,
+    down: 9,
+    downright: 10,
+    no: 11,
+    #
+    text: 12,
+    hand: 13,
+    tile: 14,
+    yes: 15,
+  }
+
   def initialize
     @working_dir = ""
     @skin_name = "default"
+    @cursor_skin_name = "default"
+    @cursor_skin = Assets.cursor_skin(@cursor_skin_name)
     @skin = Assets.skin(@skin_name)
   end
 
   def skin_name=(name)
     @skin_name = name
     @skin = Assets.skin(@skin_name)
-    SkinSignal.notify_change(@skin)
+    $skinsignal.notify_change(@skin)
   end
 
   def update
-    ResizeSignal.update
+    $resizesignal.update
   end
 
   def windowskin
@@ -45,5 +69,9 @@ class System
 
   def button(type)
     Assets.button(@skin_name, BUTTON_TYPES[type])
+  end
+
+  def cursor(id)
+    Assets.cursor(@cursor_skin_name, CURSOR_TYPES[id])
   end
 end
