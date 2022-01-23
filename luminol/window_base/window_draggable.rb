@@ -13,9 +13,12 @@ class Window_Draggable < Window_Selectable
 
     @titlebar = Sprite.new
     @minimized = false
+    @closed = false
   end
 
   def update
+    return if @closed
+
     super()
     @titlebar.update
 
@@ -32,11 +35,42 @@ class Window_Draggable < Window_Selectable
     my = Input.mouse_y
 
     if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) || @dragging
+      x1 = self.x + self.width - 64 - 8
+      # Check if mouse is in titlebar buttons
+
       if Input.trigger?(Input::MOUSELEFT)
         @dragging = true
         @drag_x = mx - self.x
         @drag_y = my - self.y
+        self.z += 1 # Bring window up a layer
+        @titlebar.z = self.z
       end
+
+      if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2)
+        @dragging = false
+
+        # Check if mouse is in close button
+        x1 = self.x + self.width - 32 - 4
+        if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2)
+          if Input.trigger?(Input::MOUSELEFT)
+            @closed = true
+            self.visible = false
+            @titlebar.visible = false
+          end
+        end
+
+        x1 = self.x + self.width - 48 - 8
+        # Check if mouse is in minimize button
+        if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2)
+          if Input.trigger?(Input::MOUSELEFT)
+            @minimized = !@minimized
+            draw_titlebar
+          end
+        end
+
+        return
+      end
+
       if Input.press?(Input::MOUSELEFT)
         self.x = mx - @drag_x
         self.y = my - @drag_y
@@ -53,6 +87,7 @@ class Window_Draggable < Window_Selectable
   end
 
   def draw
+    return if @closed
     super()
     draw_titlebar
   end
@@ -87,18 +122,15 @@ class Window_Draggable < Window_Selectable
         @title
       )
 
-      # Padding of 4 pixels
       close = $system.button(:close)
-      bitmap.blt(self.width - 32, 8, close, Rect.new(0, 0, 16, 16))
-      restore = $system.button(:restore)
-      bitmap.blt(self.width - 48 - 4, 8, restore, Rect.new(0, 0, 16, 16))
+      bitmap.blt(self.width - 32 - 4, 8, close, Rect.new(0, 0, 16, 16))
       # Change button depending on minimized state
       if @minimized
         store_button = $system.button(:maximize)
       else
         store_button = $system.button(:minimize)
       end
-      bitmap.blt(self.width - 64 - 8, 8, store_button, Rect.new(0, 0, 16, 16))
+      bitmap.blt(self.width - 48 - 8, 8, store_button, Rect.new(0, 0, 16, 16))
     end
 
     @titlebar.bitmap = bitmap

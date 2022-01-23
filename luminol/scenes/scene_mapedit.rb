@@ -16,12 +16,6 @@ class Scene_MapEdit
     @testwindow = Window_Draggable.new(0, 0, 480, 480, "Sound Test", icon)
     @testwindow.contents = Bitmap.new(@testwindow.width, @testwindow.height)
 
-    #@testwindow.on_resize do |x, y|
-    #  @testwindow.size = [x, y]
-    #  @testwindow.contents = Bitmap.new(@testwindow.width - 16, @testwindow.height - 16)
-    #  @testwindow.draw
-    #end
-
     @testwindow.on_draw :gradient, GradientInstruction.new(
       rect: Rect.new(16, 16, 100, 24),
       color1: Color.new(0, 0, 255, 255),
