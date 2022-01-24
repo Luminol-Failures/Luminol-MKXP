@@ -62,6 +62,7 @@ class TextInput
 
     if Input.trigger?(Input::KEY_RETURN)
       @text += "\n"
+      Input.set_text_input(@text)
     end
 
     @cursor_timer += 1
