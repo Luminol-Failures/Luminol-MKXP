@@ -91,7 +91,7 @@ class Window_Draggable < Window_Selectable
         return
       end
 
-      if Input.press?(Input::MOUSELEFT)
+      if Input.press?(Input::MOUSELEFT) && @dragging
         self.x = mx - @drag_x
         self.y = my - @drag_y
 
