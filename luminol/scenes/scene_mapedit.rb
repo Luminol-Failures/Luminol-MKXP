@@ -1,7 +1,6 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
-require_relative "../window_base/widgets/button"
-require_relative "../window_base/widgets/radio_button"
+require_relative "../window_base/widgets/textinput"
 
 class Scene_MapEdit
   def main
@@ -14,6 +13,14 @@ class Scene_MapEdit
     icon.blt(0, 0, skin, Rect.new(192, 80, 16, 16))
 
     @testwindow = Window_Draggable.new(0, 0, 240, 480, "Sound Test", icon)
+    @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
+
+    @textinput = TextInput.new(Rect.new(0, 0, 200, 64), hint_text: "Hint text here...")
+    @textinput.on_finish do |text|
+      print "Text: #{text}"
+    end
+    @testwindow.add_widget(:test, @textinput)
+
     @testwindow.draw
 
     loop do
