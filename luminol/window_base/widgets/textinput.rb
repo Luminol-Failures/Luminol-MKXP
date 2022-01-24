@@ -36,7 +36,7 @@ class TextInput
         Input.start_text_input(@text_limit)
         Input.set_text_input(@text)
         @click_block.call(@text) if @click_block
-      elsif Input.trigger?(Input::MOUSELEFT)
+      elsif Input.trigger?(Input::MOUSELEFT) && @active
         @active = false
         Input.stop_text_input
         @finish_block.call(@text) if @finish_block
