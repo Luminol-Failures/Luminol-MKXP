@@ -15,6 +15,8 @@ class Scroller
 
     @drag_x = 0
     @drag_y = 0
+    @drag_ox = 0
+    @drag_oy = 0
   end
 
   def add_widget(widget)
@@ -55,6 +57,7 @@ class Scroller
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
             @scrolling_x = true
             @drag_x = mx
+            @drag_ox = @ox
           end
         end
         if @scroll_y && Input.trigger?(Input::MOUSELEFT)
@@ -66,20 +69,21 @@ class Scroller
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
             @scrolling_y = true
             @drag_y = my
+            @drag_oy = @oy
           end
         end
 
         if @scrolling_x && Input.press?(Input::MOUSELEFT)
-          @ox = mx - @drag_x
-          @ox.clamp(0, @rect.width - scroll_x_width)
+          @ox = @drag_ox + (mx - @drag_x)
+          @ox = @ox.clamp(0, @widget.width - @rect.width)
           window.draw
         else
           @scrolling_x = false
         end
 
         if @scrolling_y && Input.press?(Input::MOUSELEFT)
-          @oy = my - @drag_y
-          @oy.clamp(0, @rect.height - scroll_y_height)
+          @oy = @drag_oy + (my - @drag_y)
+          @oy = @oy.clamp(0, @widget.height - @rect.height)
           window.draw
         else
           @scrolling_y = false
