@@ -71,10 +71,10 @@ class TextInput
   end
 
   def inside?(window, x, y)
-    x1 = @rect.x + window.x
-    y1 = @rect.y + window.y
-    x2 = @rect.x + @rect.width + window.x
-    y2 = @rect.y + @rect.height + window.y
+    x1 = @rect.x + window.x + 16
+    y1 = @rect.y + window.y + 16
+    x2 = @rect.x + @rect.width + window.x + 16
+    y2 = @rect.y + @rect.height + window.y + 16
 
     return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
