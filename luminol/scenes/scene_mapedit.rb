@@ -20,7 +20,7 @@ class Scene_MapEdit
     @textinput.on_finish do |text|
       print "Text: #{text}"
     end
-    @scroller = Scroller.new(Rect.new(0, 0, 140, 200))
+    @scroller = Scroller.new(Rect.new(0, 0, 200, 200))
     @scroller.add_widget(@textinput)
     @testwindow.add_widget(:scroller, @scroller)
 

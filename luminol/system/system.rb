@@ -9,7 +9,6 @@ class System
 
   attr_accessor :border_color
   attr_accessor :interior_color
-  attr_accessor :scrollbar_color
   attr_accessor :scrollbar_width
 
   BUTTON_TYPES = {
@@ -55,7 +54,6 @@ class System
 
     @border_color = Color.new(168, 178, 255)
     @interior_color = Color.new(255, 255, 255)
-    @scrollbar_color = Color.new(252, 186, 3)
     @scrollbar_width = 8
   end
 
@@ -83,5 +81,14 @@ class System
 
   def cursor(id)
     Assets.cursor(@cursor_skin_name, CURSOR_TYPES[id])
+  end
+
+  def scrollbar(vertical = false)
+    bitmap = Bitmap.new(16, 16)
+    unless vertical
+      bitmap.blt(0, 0, @skin, Rect.new(208, 80, 16, 16))
+    else
+      bitmap.blt(0, 0, @skin, Rect.new(224, 80, 16, 16))
+    end
   end
 end

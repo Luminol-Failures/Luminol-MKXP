@@ -74,7 +74,7 @@ class Scroller
         end
 
         if @scrolling_x && Input.press?(Input::MOUSELEFT)
-          @ox = @drag_ox + (mx - @drag_x)
+          @ox = (@drag_ox + (mx - @drag_x)) / scroll_x_ratio
           @ox = @ox.clamp(0, @widget.width - @rect.width)
           window.draw
         else
@@ -82,7 +82,7 @@ class Scroller
         end
 
         if @scrolling_y && Input.press?(Input::MOUSELEFT)
-          @oy = @drag_oy + (my - @drag_y)
+          @oy = (@drag_oy + (my - @drag_y)) / scroll_y_ratio
           @oy = @oy.clamp(0, @widget.height - @rect.height)
           window.draw
         else
@@ -103,8 +103,8 @@ class Scroller
     # Draw background
     width = @rect.width
     height = @rect.height
-    width += $system.scrollbar_width if @scroll_x
-    height += $system.scrollbar_width if @scroll_y
+    width += $system.scrollbar_width if @scroll_y
+    height += $system.scrollbar_width if @scroll_x
     bg_rect = Rect.new(0, 0, width, height)
     bitmap.fill_rect(bg_rect, Color.new(48, 48, 48))
 
@@ -125,14 +125,15 @@ class Scroller
       scroll_x_ratio = @rect.width.to_f / @widget.width
       scroll_x_width = @rect.width * scroll_x_ratio
       scrollbar_x = scroll_x_ratio * @ox
-      bitmap.fill_rect(
+      bitmap.stretch_blt(
         Rect.new(
           @rect.x + scrollbar_x,
           @rect.y + @rect.height,
           scroll_x_width,
           $system.scrollbar_width
         ),
-        $system.scrollbar_color
+        $system.scrollbar,
+        Rect.new(0, 0, 16, 16)
       )
     end
 
@@ -140,14 +141,15 @@ class Scroller
       scroll_y_ratio = @rect.height.to_f / @widget.height
       scroll_y_height = @rect.height * scroll_y_ratio
       scrollbar_y = scroll_y_ratio * @oy
-      bitmap.fill_rect(
+      bitmap.stretch_blt(
         Rect.new(
           @rect.x + @rect.width,
           @rect.y + scrollbar_y,
           $system.scrollbar_width,
           scroll_y_height
         ),
-        $system.scrollbar_color
+        $system.scrollbar(true),
+        Rect.new(0, 0, 16, 16)
       )
     end
   end
@@ -158,13 +160,13 @@ class Scroller
 
   def width
     width = @rect.width
-    width += $system.scrollbar_width if @scroll_x
+    width += $system.scrollbar_width if @scroll_y
     return width
   end
 
   def height
     height = @rect.height
-    height += $system.scrollbar_width if @scroll_y
+    height += $system.scrollbar_width if @scroll_x
     return height
   end
 
