@@ -47,7 +47,7 @@ class Window_Draggable < Window_Selectable
     x1 = self.x
     y1 = self.y - 32
     x2 = self.x + self.width
-    y2 = self.y + 32
+    y2 = self.y
     # Check if mouse is in window
 
     mx = Input.mouse_x

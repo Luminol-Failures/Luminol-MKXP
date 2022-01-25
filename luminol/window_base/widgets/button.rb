@@ -12,7 +12,7 @@ class Button
       mx = Input.mouse_x
       my = Input.mouse_y
 
-      @selected = inside_button?(window, mx, my) # Check if mouse is in button
+      @selected = inside?(window, mx, my) # Check if mouse is in button
 
       if @selected
         if Input.trigger?(Input::MOUSELEFT)
@@ -85,7 +85,7 @@ class Button
     return @rect.y
   end
 
-  def inside_button?(window, x, y)
+  def inside?(window, x, y)
     x1 = @rect.x + window.x + 16
     y1 = @rect.y + window.y + 16
     x2 = @rect.x + @rect.width + window.x + 16

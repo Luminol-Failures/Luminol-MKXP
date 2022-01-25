@@ -7,6 +7,11 @@ class System
   attr_reader :skin_name
   attr_reader :skin
 
+  attr_accessor :border_color
+  attr_accessor :interior_color
+  attr_accessor :scrollbar_color
+  attr_accessor :scrollbar_width
+
   BUTTON_TYPES = {
     close: 0,
     minimize: 1,
@@ -47,6 +52,11 @@ class System
     @cursor_skin_name = "default"
     @cursor_skin = Assets.cursor_skin(@cursor_skin_name)
     @skin = Assets.skin(@skin_name)
+
+    @border_color = Color.new(168, 178, 255)
+    @interior_color = Color.new(255, 255, 255)
+    @scrollbar_color = Color.new(252, 186, 3)
+    @scrollbar_width = 8
   end
 
   def skin_name=(name)

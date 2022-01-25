@@ -80,8 +80,8 @@ class TextInput
   end
 
   def draw(bitmap)
-    outside_color = Color.new(168, 178, 255)
-    inside_color = Color.new(255, 255, 255)
+    outside_color = $system.border_color
+    inside_color = $system.interior_color
     spacing = 3
 
     outside_rect = Rect.new(

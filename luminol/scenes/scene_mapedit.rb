@@ -1,6 +1,7 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
 require_relative "../window_base/widgets/textinput"
+require_relative "../window_base/widgets/scroller"
 
 class Scene_MapEdit
   def main
@@ -15,11 +16,13 @@ class Scene_MapEdit
     @testwindow = Window_Draggable.new(0, 0, 240, 480, "Sound Test", icon)
     @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
 
-    @textinput = TextInput.new(Rect.new(0, 0, 200, 64), hint_text: "Hint text here...")
+    @textinput = TextInput.new(Rect.new(0, 0, 200, 480), hint_text: "Hint text here...")
     @textinput.on_finish do |text|
       print "Text: #{text}"
     end
-    @testwindow.add_widget(:test, @textinput)
+    @scroller = Scroller.new(Rect.new(0, 0, 140, 200))
+    @scroller.add_widget(@textinput)
+    @testwindow.add_widget(:scroller, @scroller)
 
     @testwindow.draw
 
