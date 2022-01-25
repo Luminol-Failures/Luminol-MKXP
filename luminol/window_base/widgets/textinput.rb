@@ -47,6 +47,11 @@ class TextInput
       @text = Input.text_input
     end
 
+    #if Input.trigger?(Input::KEY_RETURN)
+    #  @text += "\n"
+    #  Input.set_text_input(@text)
+    #end
+
     if @text != @old_text
       @old_text = @text
       window.draw
@@ -58,11 +63,6 @@ class TextInput
     elsif Input.repeat?(Input::LEFT)
       @cursor_pos -= 1 unless @cursor_pos <= 1
       window.draw
-    end
-
-    if Input.trigger?(Input::KEY_RETURN)
-      @text += "\n"
-      Input.set_text_input(@text)
     end
 
     @cursor_timer += 1
@@ -168,8 +168,7 @@ class TextInput
 end
 
 class String
-  def wrap(width)
-    gsub(/(.{1,#{width}})( +|$\n?)|(.{1,#{width}})/,
-         "\\1\\3\n")
+  def wrap(width = 80)
+    gsub(/(.{1,#{width}})( +|$\n?)|(.{1,#{width}})/, "\\1\\3\n")
   end
 end

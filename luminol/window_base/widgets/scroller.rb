@@ -32,6 +32,7 @@ class Scroller
   end
 
   def update(window)
+    @widget.update(window) if @widget
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -93,7 +94,6 @@ class Scroller
       @selected = @widget.selected? if @widget
       @selected = false if @widget.nil?
     end
-    @widget.update(window) if @widget && !@scrolling_x && !@scrolling_y
   end
 
   def draw(bitmap)
