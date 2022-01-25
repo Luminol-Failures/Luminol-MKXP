@@ -1,4 +1,6 @@
 class TextInput
+  attr_accessor :clipped_region
+
   def initialize(rect, options)
     @rect = rect
     @hint_text = options[:hint_text]
@@ -22,6 +24,8 @@ class TextInput
 
     @cursor_pos = 1
     @cursor_override = false
+    
+    @clipped_region = nil
   end
 
   def update(window)
@@ -68,15 +72,6 @@ class TextInput
     @cursor_timer += 1
     @cursor_timer %= 30 # Make the cursor blink every 30 frames
     window.draw if @active && @cursor_timer == 0
-  end
-
-  def inside?(window, x, y)
-    x1 = @rect.x + window.x + 16
-    y1 = @rect.y + window.y + 16
-    x2 = @rect.x + @rect.width + window.x + 16
-    y2 = @rect.y + @rect.height + window.y + 16
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 
   def draw(bitmap)
@@ -165,6 +160,22 @@ class TextInput
   def selected?
     @selected || @active
   end
+
+  def inside?(window, x, y)
+    if @clipped_region
+        x1 = @clipped_region.x + window.x + 16
+        y1 = @clipped_region.y + window.y + 16
+        x2 = x1 + @clipped_region.width
+        y2 = y1 + @clipped_region.height
+    else
+        x1 = self.x + window.x + 16
+        y1 = self.y + window.y + 16
+        x2 = x1 + self.width
+        y2 = y1 + self.height
+    end
+
+    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+end
 end
 
 class String

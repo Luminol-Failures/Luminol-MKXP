@@ -28,11 +28,22 @@ class Scroller
       @scroll_y = true
     end
 
+    if widget.method(:clipped_region) # Check if widget has a clipped_region method
+      widget.clipped_region = @rect
+    end
+
     @contents = Bitmap.new(@widget.width, @widget.height)
   end
 
   def update(window)
-    @widget.update(window) if @widget
+    if @widget
+      @widget.update(window)
+      # Check if the widget has offset methods (some need to know the offset, but not all)
+      if @widget.methods.include?(:ox)
+        @widget.ox = @ox
+        @widget.oy = @oy
+      end
+    end
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -97,6 +108,7 @@ class Scroller
   end
 
   def draw(bitmap)
+    return unless @widget
     @contents.clear
     @widget.draw(@contents) if @widget
 
@@ -105,7 +117,7 @@ class Scroller
     height = @rect.height
     width += $system.scrollbar_width if @scroll_y
     height += $system.scrollbar_width if @scroll_x
-    bg_rect = Rect.new(0, 0, width, height)
+    bg_rect = Rect.new(@rect.x, @rect.y, width, height)
     bitmap.fill_rect(bg_rect, Color.new(48, 48, 48))
 
     # Copy the contents of the widget to the scroller
