@@ -93,7 +93,7 @@ class Scroller
       @selected = @widget.selected? if @widget
       @selected = false if @widget.nil?
     end
-    @widget.update(window) if @widget
+    @widget.update(window) if @widget && !@scrolling_x && !@scrolling_y
   end
 
   def draw(bitmap)
@@ -101,7 +101,12 @@ class Scroller
     @widget.draw(@contents) if @widget
 
     # Draw background
-    bitmap.fill_rect(@rect, Color.new(48, 48, 48))
+    width = @rect.width
+    height = @rect.height
+    width += $system.scrollbar_width if @scroll_x
+    height += $system.scrollbar_width if @scroll_y
+    bg_rect = Rect.new(0, 0, width, height)
+    bitmap.fill_rect(bg_rect, Color.new(48, 48, 48))
 
     # Copy the contents of the widget to the scroller
     bitmap.stretch_blt(
@@ -152,11 +157,15 @@ class Scroller
   end
 
   def width
-    return @rect.width
+    width = @rect.width
+    width += $system.scrollbar_width if @scroll_x
+    return width
   end
 
   def height
-    return @rect.height
+    height = @rect.height
+    height += $system.scrollbar_width if @scroll_y
+    return height
   end
 
   def x
