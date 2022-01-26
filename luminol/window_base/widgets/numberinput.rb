@@ -72,7 +72,7 @@ class NumberInput
       if Input.trigger?(Input::MOUSELEFT) && @selected
         @active = true
         Input.start_text_input(10)
-        Input.set_text_input(@manual_value)
+        Input.set_text_input(@value.to_s)
       elsif Input.trigger?(Input::MOUSELEFT) && @active
         @active = false
         Input.stop_text_input
@@ -144,6 +144,12 @@ class NumberInput
 
   def value
     return @value
+  end
+
+  def value=(value)
+    @value = value
+    @manual_value = value.to_s
+    Input.set_text_input(@manual_value) if @active
   end
 
   def inside?(window, x, y)
