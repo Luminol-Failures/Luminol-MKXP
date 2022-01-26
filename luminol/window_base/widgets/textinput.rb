@@ -1,7 +1,7 @@
 class TextInput
   attr_accessor :clipped_region
 
-  def initialize(rect, options)
+  def initialize(rect, options = {})
     @rect = rect
     @hint_text = options[:hint_text]
     @hint_text ||= ""
@@ -24,7 +24,7 @@ class TextInput
 
     @cursor_pos = 1
     @cursor_override = false
-    
+
     @clipped_region = nil
   end
 
@@ -163,19 +163,19 @@ class TextInput
 
   def inside?(window, x, y)
     if @clipped_region
-        x1 = @clipped_region.x + window.x + 16
-        y1 = @clipped_region.y + window.y + 16
-        x2 = x1 + @clipped_region.width
-        y2 = y1 + @clipped_region.height
+      x1 = @clipped_region.x + window.x + 16
+      y1 = @clipped_region.y + window.y + 16
+      x2 = x1 + @clipped_region.width
+      y2 = y1 + @clipped_region.height
     else
-        x1 = self.x + window.x + 16
-        y1 = self.y + window.y + 16
-        x2 = x1 + self.width
-        y2 = y1 + self.height
+      x1 = self.x + window.x + 16
+      y1 = self.y + window.y + 16
+      x2 = x1 + self.width
+      y2 = y1 + self.height
     end
 
     return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
-end
+  end
 end
 
 class String

@@ -134,26 +134,26 @@ class Window_Draggable < Window_Selectable
         srcrect
       )
       bitmap.blt(self.width - 16, i * 16, title_pieces[3 + (i * 4)], srcrect)
-
-      bitmap.blt(8, 8, @icon, Rect.new(0, 0, 16, 16))
-      bitmap.font = Font.new("Terminus (TTF)", 16)
-
-      size = bitmap.text_size(@title)
-      bitmap.draw_text(
-        Rect.new(32, 8, size.width, size.height),
-        @title
-      )
-
-      close = $system.button(:close)
-      bitmap.blt(self.width - 32 - 4, 8, close, Rect.new(0, 0, 16, 16))
-      # Change button depending on minimized state
-      if @minimized
-        store_button = $system.button(:maximize)
-      else
-        store_button = $system.button(:minimize)
-      end
-      bitmap.blt(self.width - 48 - 8, 8, store_button, Rect.new(0, 0, 16, 16))
     end
+
+    bitmap.blt(8, 8, @icon, Rect.new(0, 0, 16, 16))
+    bitmap.font = Font.new("Terminus (TTF)", 16)
+
+    size = bitmap.text_size(@title)
+    bitmap.draw_text(
+      Rect.new(32, 8, size.width, size.height),
+      @title
+    )
+
+    close = $system.button(:close)
+    bitmap.blt(self.width - 32 - 4, 8, close, Rect.new(0, 0, 16, 16))
+    # Change button depending on minimized state
+    if @minimized
+      store_button = $system.button(:maximize)
+    else
+      store_button = $system.button(:minimize)
+    end
+    bitmap.blt(self.width - 48 - 8, 8, store_button, Rect.new(0, 0, 16, 16))
 
     @titlebar.bitmap = bitmap
   end

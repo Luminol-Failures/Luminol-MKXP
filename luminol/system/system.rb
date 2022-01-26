@@ -21,6 +21,8 @@ class System
     radio_pressed: 5,
     pressed: 6,
     file: 8,
+    up: 9,
+    down: 10,
   }
 
   CURSOR_TYPES = {
