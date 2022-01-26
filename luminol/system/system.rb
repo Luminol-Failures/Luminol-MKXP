@@ -23,6 +23,13 @@ class System
     file: 8,
     up: 9,
     down: 10,
+
+    note: 12,
+    bar: 13,
+    bar_vertical: 14,
+
+    slider: 16,
+    slider_vertical: 17,
   }
 
   CURSOR_TYPES = {
@@ -86,11 +93,18 @@ class System
   end
 
   def scrollbar(vertical = false)
-    bitmap = Bitmap.new(16, 16)
-    unless vertical
-      bitmap.blt(0, 0, @skin, Rect.new(208, 80, 16, 16))
+    if vertical
+      button(:bar_vertical)
     else
-      bitmap.blt(0, 0, @skin, Rect.new(224, 80, 16, 16))
+      button(:bar)
+    end
+  end
+
+  def slider(vertical = false)
+    if vertical
+      button(:slider_vertical)
+    else
+      button(:slider)
     end
   end
 end

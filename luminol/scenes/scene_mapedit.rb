@@ -1,6 +1,6 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
-require_relative "../window_base/widgets/numberinput"
+require_relative "../window_base/widgets/slider"
 
 class Scene_MapEdit
   def main
@@ -14,14 +14,36 @@ class Scene_MapEdit
 
     @testwindow = Window_Draggable.new(0, 0, 240, 480, "Sound Test", icon)
     @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
+    @testwindow.add_widget(
+      :slider,
+      Slider.new(
+        Rect.new(0, 0, 32, 128)
+      )
+    )
 
     @testwindow.add_widget(
-      :numberinput,
-      NumberInput.new(Rect.new(0, 0, 128, 32))
+      :rslider,
+      Slider.new(
+        Rect.new(40, 0, 32, 128),
+        reversed: true,
+      )
     )
-    @testwindow.widget(:numberinput).on_change do |value|
-      print value
-    end
+
+    @testwindow.add_widget(
+      :hslider,
+      Slider.new(
+        Rect.new(0, 130, 128, 32),
+        horizontal: true,
+      )
+    )
+
+    @testwindow.add_widget(
+      :hrslider,
+      Slider.new(
+        Rect.new(0, 164, 128, 32),
+        horizontal: true, reversed: true,
+      )
+    )
 
     @testwindow.draw
 
