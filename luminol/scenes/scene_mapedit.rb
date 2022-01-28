@@ -16,7 +16,7 @@ class Scene_MapEdit
     @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
 
     @testwindow.add_widget(
-      :color, ColorPicker.new(Rect.new(0, 0, 200, 128))
+      :color, ColorPicker.new(Rect.new(0, 0, 200, 128), alpha: true)
     )
 
     @testwindow.draw

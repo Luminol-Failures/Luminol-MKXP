@@ -3,10 +3,13 @@ class ColorPicker
     @rect = rect
     @color = options[:color]
     @color ||= Color.new(255, 255, 255)
+    @display_alpha = options[:alpha]
+    @display_alpha ||= false
 
     @red = @color.red
     @green = @color.green
     @blue = @color.blue
+    @alpha = @color.alpha
 
     @old_red = @red
     @old_green = @green
@@ -28,10 +31,13 @@ class ColorPicker
       @selected = inside?(window, mx, my) # Check if mouse is in button
 
       if @selected || @dragging
-        column_width = @rect.width / 4 - 5 # - 2 For padding
+        column_width = @rect.width / 4 - 5 unless @display_alpha # - 2 For padding
+        column_width = @rect.width / 5 - 5 if @display_alpha # - 2 For padding
+
         red_x = self.x + window.x + 16 + column_width + 8
         green_x = self.x + window.x + 16 + column_width * 2 + 12
         blue_x = self.x + window.x + 16 + column_width * 3 + 16
+        alpha_x = self.x + window.x + 16 + column_width * 4 + 20
 
         all_y = self.y + window.y + 4 + 16
         all_end_y = self.y + window.y + 16 + @rect.height - 8
@@ -57,6 +63,15 @@ class ColorPicker
             @drag_y = my - all_y
             @dragging = true
           end
+
+          if @display_alpha
+            if mx >= alpha_x && mx <= alpha_x + column_width && my >= all_y && my <= all_end_y
+              @dragging_bar = :alpha
+              @drag_x = mx - alpha_x
+              @drag_y = my - all_y
+              @dragging = true
+            end
+          end
         end
 
         if @dragging && Input.press?(Input::MOUSELEFT)
@@ -70,12 +85,16 @@ class ColorPicker
             @green = value
           when :blue
             @blue = value
+          when :alpha
+            @alpha = value
           end
           @color.red = @red
           @color.green = @green
           @color.blue = @blue
+          @color.alpha = @alpha
 
-          if @blue != @old_blue || @green != @old_green || @red != @old_red
+          if @blue != @old_blue || @green != @old_green || @red != @old_red || @alpha != @old_alpha
+            @old_alpha = @alpha
             @old_blue = @blue
             @old_green = @green
             @old_red = @red
@@ -94,13 +113,15 @@ class ColorPicker
 
   def draw(bitmap)
     src_bitmap = Bitmap.new(@rect.width, @rect.height)
-    column_width = @rect.width / 4 - 5 # - 2 For padding
+    column_width = @rect.width / 4 - 5 unless @display_alpha  # - 2 For padding
+    column_width = @rect.width / 5 - 5 if @display_alpha
 
     red = Color.new(@red, 0, 0)
     green = Color.new(0, @green, 0)
     blue = Color.new(0, 0, @blue)
     black = Color.new(0, 0, 0)
     white = Color.new(255, 255, 255)
+    a_white = Color.new(@alpha, @alpha, @alpha)
 
     src_bitmap.fill_rect(0, 0, @rect.width, @rect.height, Color.new(48, 48, 48))
     src_bitmap.fill_rect(4, 4, column_width, column_width, @color)
@@ -129,6 +150,15 @@ class ColorPicker
       @blue.to_i.to_s
     )
 
+    if @display_alpha
+      a_width = src_bitmap.text_size(@alpha.to_i.to_s).width
+      src_bitmap.font.color = a_white
+      src_bitmap.draw_text(
+        Rect.new(4, column_width + text_height * 3 + 4, a_width, text_height),
+        @alpha.to_i.to_s
+      )
+    end
+
     src_bitmap.gradient_fill_rect(
       Rect.new(column_width + 8, 4, column_width, @rect.height - 8),
       red,
@@ -148,6 +178,15 @@ class ColorPicker
       true
     )
 
+    if @display_alpha
+      src_bitmap.gradient_fill_rect(
+        Rect.new(column_width * 4 + 20, 4, column_width, @rect.height - 8),
+        a_white,
+        black,
+        true
+      )
+    end
+
     height_ratio = (@rect.height - 8) / 255.0
     src_bitmap.fill_rect(
       Rect.new(column_width + 8, (255 - @red) * height_ratio + 4, column_width, 2),
@@ -161,6 +200,13 @@ class ColorPicker
       Rect.new(column_width * 3 + 16, (255 - @blue) * height_ratio + 4, column_width, 2),
       white
     )
+
+    if @display_alpha
+      src_bitmap.fill_rect(
+        Rect.new(column_width * 4 + 20, (255 - @alpha) * height_ratio + 4, column_width, 2),
+        white
+      )
+    end
 
     bitmap.blt(@rect.x, @rect.y, src_bitmap, Rect.new(0, 0, @rect.width, @rect.height))
   end
