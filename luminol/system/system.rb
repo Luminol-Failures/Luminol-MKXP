@@ -30,6 +30,8 @@ class System
 
     slider: 16,
     slider_vertical: 17,
+    rgb_top: 18,
+    rgb_bottom: 19,
   }
 
   CURSOR_TYPES = {

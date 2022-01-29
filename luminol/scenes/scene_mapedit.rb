@@ -1,6 +1,6 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
-require_relative "../window_base/widgets/colorpicker"
+require_relative "../window_base/widgets/tonepicker"
 
 class Scene_MapEdit
   def main
@@ -16,7 +16,7 @@ class Scene_MapEdit
     @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
 
     @testwindow.add_widget(
-      :color, ColorPicker.new(Rect.new(0, 0, 200, 128), alpha: true)
+      :color, TonePicker.new(Rect.new(0, 0, 200, 128))
     )
 
     @testwindow.draw
