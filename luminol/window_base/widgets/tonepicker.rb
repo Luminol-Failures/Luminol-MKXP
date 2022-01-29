@@ -70,9 +70,10 @@ class TonePicker
         end
 
         if @dragging && Input.press?(Input::MOUSELEFT)
-          height_ratio = (@rect.height - 8) / 255.0
+          height_ratio = (@rect.height - 8) / (255.0 * 2 + 1)
           value = 255 - (my - self.y - window.y - 16 - 4) / height_ratio
-          value = value.clamp(0, 255)
+          value = value.clamp(-255, 255)
+          value = value.clamp(0, 255) if @dragging_bar == :gray
           case @dragging_bar
           when :red
             @red = value
@@ -159,22 +160,43 @@ class TonePicker
       @gray.to_i.to_s
     )
 
+    height = (@rect.height - 4) / 2
     src_bitmap.gradient_fill_rect(
-      Rect.new(column_width + 8, 4, column_width, @rect.height - 8),
+      Rect.new(column_width + 8, 4, column_width, height),
       red,
       black,
       true
     )
     src_bitmap.gradient_fill_rect(
-      Rect.new(column_width * 2 + 12, 4, column_width, @rect.height - 8),
+      Rect.new(column_width + 8, height, column_width, height),
+      black,
+      red,
+      true
+    )
+
+    src_bitmap.gradient_fill_rect(
+      Rect.new(column_width * 2 + 12, 4, column_width, height),
       green,
       black,
       true
     )
     src_bitmap.gradient_fill_rect(
-      Rect.new(column_width * 3 + 16, 4, column_width, @rect.height - 8),
+      Rect.new(column_width * 2 + 12, height, column_width, height),
+      black,
+      green,
+      true
+    )
+
+    src_bitmap.gradient_fill_rect(
+      Rect.new(column_width * 3 + 16, 4, column_width, height),
       blue,
       black,
+      true
+    )
+    src_bitmap.gradient_fill_rect(
+      Rect.new(column_width * 3 + 16, height, column_width, height),
+      black,
+      blue,
       true
     )
 
@@ -185,7 +207,7 @@ class TonePicker
       true
     )
 
-    height_ratio = (@rect.height - 8) / 255.0
+    height_ratio = (@rect.height - 8) / (255.0 * 2 + 1)
     src_bitmap.fill_rect(
       Rect.new(column_width + 8, (255 - @red) * height_ratio + 4, column_width, 2),
       white
@@ -199,6 +221,7 @@ class TonePicker
       white
     )
 
+    height_ratio = (@rect.height - 8) / 255.0
     src_bitmap.fill_rect(
       Rect.new(column_width * 4 + 20, (255 - @gray) * height_ratio + 4, column_width, 2),
       white
