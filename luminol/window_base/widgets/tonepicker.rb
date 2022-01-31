@@ -71,6 +71,7 @@ class TonePicker
 
         if @dragging && Input.press?(Input::MOUSELEFT)
           height_ratio = (@rect.height - 8) / (255.0 * 2 + 1)
+	  height_ratio = (@rect.height - 8) / (255.0 + 1) if @dragging_bar == :gray
           value = 255 - (my - self.y - window.y - 16 - 4) / height_ratio
           value = value.clamp(-255, 255)
           value = value.clamp(0, 255) if @dragging_bar == :gray
