@@ -11,7 +11,7 @@ require_relative "luminol/subscribers/skin"
 require_relative "luminol/subscribers/window"
 
 begin
-  working_dir = "D:/Git/OSFM-GitHub"
+  working_dir = File.expand_path(".")
   Font.default_name = "Terminus (TTF)"
   $system = System.new
   $system.working_dir = working_dir
