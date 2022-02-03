@@ -1,6 +1,7 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/draw_types/draw_types"
-require_relative "../window_base/widgets/tonepicker"
+require_relative "../window_base/widgets/filepicker"
+require_relative "../window_base/widgets/scroller"
 
 class Scene_MapEdit
   def main
@@ -15,9 +16,11 @@ class Scene_MapEdit
     @testwindow = Window_Draggable.new(0, 0, 240, 480, "Sound Test", icon)
     @testwindow.contents = Bitmap.new(@testwindow.width - 32, @testwindow.height - 32)
 
-    @testwindow.add_widget(
-      :color, TonePicker.new(Rect.new(0, 0, 200, 128))
-    )
+    picker = Filepicker.new(Rect.new(0, 0, 0, 0), ext_filter: [], min_width: 200, min_height: 220)
+    scroller = Scroller.new(Rect.new(0, 0, 200, 220))
+    scroller.add_widget(picker)
+
+    @testwindow.add_widget(:picker, scroller)
 
     @testwindow.draw
 

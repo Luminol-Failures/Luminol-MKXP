@@ -32,6 +32,8 @@ class System
     slider_vertical: 17,
     rgb_top: 18,
     rgb_bottom: 19,
+
+    directory: 20,
   }
 
   CURSOR_TYPES = {
@@ -57,7 +59,7 @@ class System
   }
 
   def initialize
-    @working_dir = ""
+    @working_dir = Dir.pwd
     @skin_name = "default"
     @cursor_skin_name = "default"
     @cursor_skin = Assets.cursor_skin(@cursor_skin_name)

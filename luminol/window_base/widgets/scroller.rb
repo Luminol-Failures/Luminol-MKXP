@@ -1,4 +1,6 @@
 class Scroller
+  attr_accessor :ox, :oy
+
   def initialize(rect, options = {})
     @rect = rect
     @options = options
@@ -31,6 +33,9 @@ class Scroller
     if widget.method(:clipped_region) # Check if widget has a clipped_region method
       widget.clipped_region = @rect
     end
+    if widget.method(:scroller)
+      widget.scroller = self
+    end
 
     @contents = Bitmap.new(@widget.width, @widget.height)
   end
@@ -48,11 +53,11 @@ class Scroller
       mx = Input.mouse_x
       my = Input.mouse_y
 
-      @selected = inside?(window, mx, my) # Check if mouse is in button
+      @selected = inside?(window, mx, my) || @scrolling_x || @scrolling_y
 
-      @selected = @widget.selected? if @widget
+      @selected = @widget.selected? if @widget && !@selected
 
-      if @widget
+      if @widget && @selected
         scroll_x_ratio = @rect.width.to_f / @widget.width
         scroll_x_width = @rect.width * scroll_x_ratio
         scrollbar_x = scroll_x_ratio * @ox
@@ -110,6 +115,14 @@ class Scroller
   def draw(bitmap)
     return unless @widget
     @contents.clear
+
+    # Note to self: some people have shit graphics cards.
+    # this may exceed the maximum texture size.
+    # TODO: find a way to fix this.
+    if @widget.width > @contents.width || @widget.height > @contents.height
+      @contents.dispose
+      @contents = Bitmap.new(@widget.width, @widget.height)
+    end
     @widget.draw(@contents) if @widget
 
     # Draw background
@@ -193,8 +206,8 @@ class Scroller
   def inside?(window, x, y)
     x1 = @rect.x + window.x + 16
     y1 = @rect.y + window.y + 16
-    x2 = @rect.x + @rect.width + window.x + 16
-    y2 = @rect.y + @rect.height + window.y + 16
+    x2 = @rect.x + self.width + window.x + 16
+    y2 = @rect.y + self.height + window.y + 16
 
     return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end

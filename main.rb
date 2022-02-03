@@ -1,6 +1,7 @@
 # The setup for this is gonna be weird but i assure you it WILL work i think
 
 require_relative "luminol/system/system"
+require_relative "luminol/system/os"
 require_relative "luminol/scenes/scene_mapedit"
 require_relative "luminol/system/crashhandler"
 require_relative "luminol/system/cursor"
@@ -22,6 +23,7 @@ begin
   Graphics.show_cursor = false
 
   $cursor = Cursor.new
+  $luminol_os = OS.os
 
   Graphics.frame_rate = 60
 
