@@ -73,6 +73,8 @@ if OS.os == "windows"
           files << child if @ext_filter.include?(ext)
         end
       end
+      files.sort! { |a, b| a <=> b }
+      folders.sort! { |a, b| a <=> b }
       @children = folders + files
       @children.prepend("..")
     end
@@ -293,6 +295,8 @@ else
           files << child if @ext_filter.include?(ext)
         end
       end
+      files.sort! { |a, b| a <=> b }
+      folders.sort! { |a, b| a <=> b }
       @children = folders + files
       @children.prepend("..")
     end
