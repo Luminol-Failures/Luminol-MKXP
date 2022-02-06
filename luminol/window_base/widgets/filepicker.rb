@@ -4,6 +4,9 @@ require_relative "../../system/os"
 # We pretty much need to have two different class definitions because of how different the linux and windows filesystems can be
 # Windows will need a drive picker, same with linux, but how we get that depends on the OS
 # For now, I'm not going to add drive picker support, but I'll add it later
+
+# TODO: Add drive picker support
+# TODO: Add support for linux
 if OS.os == "windows"
   class Filepicker
     attr_accessor :ox, :oy
@@ -100,7 +103,7 @@ if OS.os == "windows"
     end
 
     def update(window)
-      if MKXP.mouse_in_window
+      if MKXP.mouse_in_window || @selected
         mx = Input.mouse_x
         my = Input.mouse_y
 
@@ -155,8 +158,6 @@ if OS.os == "windows"
         color = Color.new(40, 40, 40) if i.odd?
         color = Color.new(color.red + 80, color.green, color.blue + 100) if @index == i
 
-        border_color = Color.new(128, 128, 128)
-        bitmap.fill_rect(rect, border_color)
         bitmap.fill_rect(rect, color)
 
         text = @children[i]
@@ -173,6 +174,8 @@ if OS.os == "windows"
         rect.x = 0
         rect.height = @padding
         rect.y = @item_height * (i + 1) - @padding
+        border_color = Color.new(128, 128, 128)
+        bitmap.fill_rect(rect, border_color)
       end
       bitmap.font = bfont
     end

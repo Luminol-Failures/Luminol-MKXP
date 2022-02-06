@@ -37,7 +37,14 @@ class Scroller
       widget.scroller = self
     end
 
-    @contents = Bitmap.new(@widget.width, @widget.height)
+    setup_contents
+  end
+
+  def setup_contents
+    @contents = Bitmap.new(
+      @widget.width,
+      @widget.height
+    )
   end
 
   def update(window)
@@ -121,7 +128,7 @@ class Scroller
     # TODO: find a way to fix this.
     if @widget.width > @contents.width || @widget.height > @contents.height
       @contents.dispose
-      @contents = Bitmap.new(@widget.width, @widget.height)
+      setup_contents
     end
     @widget.draw(@contents) if @widget
 

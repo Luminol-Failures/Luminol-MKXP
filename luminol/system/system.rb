@@ -11,7 +11,7 @@ class System
   attr_accessor :interior_color
   attr_accessor :scrollbar_width
 
-  attr_reader :max_tex_size
+  attr_reader :max_texture_size
 
   BUTTON_TYPES = {
     close: 0,
@@ -71,7 +71,7 @@ class System
     @interior_color = Color.new(255, 255, 255)
     @scrollbar_width = 8
 
-    @max_tex_size = 4096
+    @max_texture_size = 4096 # NEVER EXCEED 4096
   end
 
   def skin_name=(name)
