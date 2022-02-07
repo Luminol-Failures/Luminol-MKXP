@@ -1,10 +1,15 @@
 class Button
-  def initialize(rect, type, options = {})
+  def initialize(rect, options = {})
     @rect = rect
     @state = false
     @selected = false
     @options = options
-    @type = type
+
+    @pressed_icon = options[:pressed_icon]
+    @pressed_icon ||= $system.button(:pressed)
+    @unpressed_icon = options[:unpressed_icon]
+    @unpressed_icon ||= options[:released_icon]
+    @unpressed_icon ||= $system.button(:unpressed)
   end
 
   def update(window)
@@ -27,26 +32,11 @@ class Button
   end
 
   def draw(bitmap)
-    case @type
-    when :normal
-      if @state
-        icon_type = :pressed
-      else
-        icon_type = :unpressed
-      end
-    when :radio_unpressed, :radio_pressed
-      if @state
-        icon_type = :radio_pressed
-      else
-        icon_type = :radio_unpressed
-      end
-    when :file
-      icon_type = :file
+    if @state
+      icon = @pressed_icon
     else
-      print "Unknown button type: #{@type}"
+      icon = @unpressed_icon
     end
-
-    icon = $system.button(icon_type)
     opacity = @options[:opacity]
     opacity ||= 255
     bitmap.stretch_blt(@rect, icon, Rect.new(0, 0, icon.width, icon.height), opacity)
@@ -66,7 +56,6 @@ class Button
 
   def on_click(&block)
     @block = block
-    @block.call(@state)
   end
 
   def width

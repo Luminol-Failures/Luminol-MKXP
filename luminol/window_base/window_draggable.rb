@@ -35,10 +35,24 @@ class Window_Draggable < Window_Selectable
     $windowsignal.on_call(&@drag_proc)
   end
 
+  def close
+    @closed = true
+    self.visible = false
+    @titlebar.visible = false
+  end
+
+  def open
+    @closed = false
+    self.visible = true
+    @titlebar.visible = true
+    @minimized = false
+    draw_titlebar
+  end
+
   def update
+    super()
     return if @closed
 
-    super()
     @titlebar.update
 
     self.visible = !@minimized
@@ -73,9 +87,7 @@ class Window_Draggable < Window_Selectable
         x1 = self.x + self.width - 32 - 4
         if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2)
           if Input.trigger?(Input::MOUSELEFT)
-            @closed = true
-            self.visible = false
-            @titlebar.visible = false
+            self.close
           end
         end
 

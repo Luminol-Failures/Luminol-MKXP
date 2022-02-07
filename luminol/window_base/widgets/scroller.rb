@@ -40,6 +40,15 @@ class Scroller
     setup_contents
   end
 
+  def refresh_contents
+    if @widget.width > @rect.width
+      @scroll_x = true
+    end
+    if @widget.height > @rect.height
+      @scroll_y = true
+    end
+  end
+
   def setup_contents
     @contents = Bitmap.new(
       @widget.width,
@@ -142,6 +151,7 @@ class Scroller
     if @widget.width > @contents.width || @widget.height > @contents.height
       @contents.dispose
       setup_contents
+      refresh_contents
     end
     @widget.draw(@contents) if @widget
 
