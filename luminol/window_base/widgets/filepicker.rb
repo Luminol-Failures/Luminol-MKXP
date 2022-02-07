@@ -2,11 +2,6 @@ require_relative "../../system/os"
 
 # Windows class definition
 # We pretty much need to have two different class definitions because of how different the linux and windows filesystems can be
-# Windows will need a drive picker, same with linux, but how we get that depends on the OS
-# For now, I'm not going to add drive picker support, but I'll add it later
-
-# TODO: Add drive picker support
-# TODO: Add support for linux
 if OS.os == "windows"
   class Filepicker
     attr_accessor :ox, :oy
@@ -25,7 +20,7 @@ if OS.os == "windows"
       @x, @y = rect.x, rect.y
 
       @index = options[:index]
-      @index ||= 0
+      @index ||= -1
 
       @starting_directory = options[:starting_directory]
       @starting_directory ||= $system.working_dir
@@ -61,7 +56,18 @@ if OS.os == "windows"
     end
 
     def setup_children
-      children = Dir.children(@current_directory)
+      if @drive_picker
+        require "win32ole"
+        file_system = WIN32OLE.new("Scripting.FileSystemObject")
+        drives = file_system.Drives
+
+        children = []
+        drives.each do |drive|
+          children << drive.Path + "/"
+        end
+      else
+        children = Dir.children(@current_directory)
+      end
       folders = []
       files = []
       children.each do |child|
@@ -79,7 +85,7 @@ if OS.os == "windows"
       files.sort! { |a, b| a <=> b }
       folders.sort! { |a, b| a <=> b }
       @children = folders + files
-      @children.prepend("..")
+      @children.prepend("..") unless @drive_picker
     end
 
     def selected?
@@ -118,23 +124,37 @@ if OS.os == "windows"
           elsif @index == index
             if @children[index].nil?
               # Do nothing
-            elsif index == 0
-              @current_directory = File.expand_path(@current_directory + "/../")
+            elsif index == 0 && !@drive_picker
+              if @current_directory =~ /^[A-Z]:\/$/ || @drive_picker # If we're on a drive
+                @current_directory = ""
+                @drive_picker = true
+              else
+                @current_directory = File.expand_path(@current_directory + "/../")
+                @drive_picker = false
+              end
+
               @on_navigate.call(@current_directory) if @on_navigate
               setup_children
               if @scroller
                 @scroller.ox = 0
                 @scroller.oy = 0
               end
+              @index = -1
               window.draw
-            elsif File.directory?(File.join(@current_directory, @children[index]))
-              @current_directory = File.join(@current_directory, @children[index])
+            elsif File.directory?(File.join(@current_directory, @children[index])) || @drive_picker
+              if @drive_picker
+                @current_directory = @children[index]
+              else
+                @current_directory = File.join(@current_directory, @children[index])
+              end
+              @drive_picker = false
               @on_navigate.call(@current_directory) if @on_navigate
               if @scroller
                 @scroller.ox = 0
                 @scroller.oy = 0
               end
               setup_children
+              @index = -1
               window.draw
             else
               @selected_file = File.join(@current_directory, @children[index])
@@ -162,7 +182,7 @@ if OS.os == "windows"
 
         text = @children[i]
         next if text.nil?
-        if File.directory?(File.join(@current_directory, text))
+        if File.directory?(File.join(@current_directory, text)) || @drive_picker
           bitmap.blt(rect.x + 4, rect.y + 4, @directory_icon, Rect.new(0, 0, 16, 16))
         else
           bitmap.blt(rect.x + 4, rect.y + 4, @file_icon, Rect.new(0, 0, 16, 16))
