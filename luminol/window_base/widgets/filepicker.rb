@@ -119,7 +119,7 @@ if OS.os == "windows"
             if @children[index].nil?
               # Do nothing
             elsif index == 0
-              @current_directory = File.expand_path(@current_directory + "../")
+              @current_directory = File.expand_path(@current_directory + "/../")
               @on_navigate.call(@current_directory) if @on_navigate
               setup_children
               if @scroller
