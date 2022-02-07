@@ -13,6 +13,8 @@ class System
 
   attr_reader :max_texture_size
 
+  attr_accessor :scroll_speed_multiplier
+
   BUTTON_TYPES = {
     close: 0,
     minimize: 1,
@@ -72,6 +74,7 @@ class System
     @scrollbar_width = 8
 
     @max_texture_size = 4096 # NEVER EXCEED 4096
+    @scroll_speed_multiplier = 20
   end
 
   def skin_name=(name)

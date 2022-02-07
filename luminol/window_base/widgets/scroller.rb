@@ -64,6 +64,19 @@ class Scroller
 
       @selected = @widget.selected? if @widget && !@selected
 
+      if @selected && @widget
+        if Input.mouse_scroll
+          if @scroll_x && Input.mouse_scroll_x != 0
+            @ox = (@ox - Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
+          end
+
+          if @scroll_y && Input.mouse_scroll_y != 0
+            @oy = (@oy - Input.mouse_scroll_y * $system.scroll_speed_multiplier).clamp(0, @widget.height - @rect.height)
+          end
+          window.draw
+        end
+      end
+
       if @widget && @selected
         scroll_x_ratio = @rect.width.to_f / @widget.width
         scroll_x_width = @rect.width * scroll_x_ratio
