@@ -35,6 +35,7 @@ class Window_ProjectPicker < Window_Draggable
   end
 
   def open
+    super
     @finished = false
   end
 end
