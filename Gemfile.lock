@@ -1,0 +1,48 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    base64 (0.1.1)
+    digest (3.1.0)
+    fiber (0.0.1)
+    fileutils (1.6.0)
+    inifile (3.0.0)
+    io-wait (0.2.1)
+    json (2.6.1)
+    net-http (0.2.0)
+      net-protocol
+      uri
+    net-protocol (0.1.2)
+      io-wait
+      timeout
+    ostruct (0.5.3)
+    pp (0.3.0)
+      prettyprint
+    prettyprint (0.1.1)
+    rake (13.0.6)
+    rpg-maker-rgss3 (1.02.0)
+    ruby-debug-ide (0.7.3)
+      rake (>= 0.8.1)
+    timeout (0.2.0)
+    uri (0.11.0)
+    zlib (2.1.1)
+
+PLATFORMS
+  x64-mingw-ucrt
+
+DEPENDENCIES
+  base64
+  digest
+  fiber
+  fileutils
+  inifile
+  json
+  net-http
+  ostruct
+  pp
+  rake
+  rpg-maker-rgss3
+  ruby-debug-ide
+  zlib
+
+BUNDLED WITH
+   2.3.3

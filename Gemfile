@@ -1,15 +1,15 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "zlib"
-gem "pp"
-gem "ostruct"
-gem "ruby-debug-ide"
-gem "fiber"
-gem "net-http"
-gem "base64"
-gem "inifile"
-gem "fileutils"
-gem "ruby_discord_game_sdk", git: "https://github.com/rkevin-arch/ruby_discord_game_sdk"
-gem "json"
-gem "digest"
-gem "rake"
+gem 'base64'
+gem 'digest'
+gem 'fiber'
+gem 'fileutils'
+gem 'inifile'
+gem 'json'
+gem 'net-http'
+gem 'ostruct'
+gem 'pp'
+gem 'rake'
+gem 'rpg-maker-rgss3'
+gem 'ruby-debug-ide'
+gem 'zlib'

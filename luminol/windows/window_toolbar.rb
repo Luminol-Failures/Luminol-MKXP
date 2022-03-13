@@ -28,8 +28,6 @@ class Window_ToolBar < Window_Selectable
     @toolbar_buttons[:project].on_click do |state|
       @projectpicker.open
       @projectpicker.draw
-      require 'pp'
-      puts @projectpicker.pretty_inspect
     end
 
     @toolbar_buttons.each do |id, button|
