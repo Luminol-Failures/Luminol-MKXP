@@ -11,6 +11,8 @@ class Window_Base < Window
     self.width = width
     self.height = height
 
+    self.contents = Bitmap.new(self.width - 32, self.height - 32)
+
     @draw_instructions = DrawInstructions.new
 
     $skinsignal.on_call do |skin|

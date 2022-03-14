@@ -1,7 +1,7 @@
 require_relative "../../system/os"
 require_relative 'widget'
 class Filepicker < Widget
-  attr_accessor :ox, :oy, :clipped_region, :current_directory, :scroller
+  attr_accessor :ox, :oy, :clipped_region, :current_directory, :scroller, :min_width, :min_height
   attr_reader :selected_file, :starting_directory, :index, :current_drive
 
   def initialize(rect, options = {})
@@ -29,10 +29,10 @@ class Filepicker < Widget
     @item_height ||= 18
     @item_height += @padding
 
-    @min_height = options[:min_height]
+    @min_height = rect.height
     @min_height ||= 256
 
-    @min_width = options[:min_width]
+    @min_width = rect.width
     @min_width ||= 64
     @font ||= Font.new(
       Font.default_name,
@@ -200,7 +200,7 @@ class Filepicker < Widget
     b.font = @font
 
     rect.height = @children.size * @item_height
-    rect.width = b.text_size(@children.max_by(&:length)).width + 20
+    rect.width = b.text_size(@children.max_by(&:length).to_s).width + 20
 
     if rect.width < @min_width
       rect.width = @min_width

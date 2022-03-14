@@ -1,12 +1,14 @@
-class TextInput
+require_relative 'widget'
+
+class TextInput < Widget
   attr_accessor :clipped_region
 
   def initialize(rect, options = {})
-    @rect = rect
+    super(rect, options)
+
     @hint_text = options[:hint_text]
     @hint_text ||= ""
     @text = ""
-    @selected = false
 
     @font_size = options[:font_size]
     @font_size ||= 16
@@ -29,6 +31,7 @@ class TextInput
   end
 
   def update(window)
+    return unless super window
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -75,6 +78,8 @@ class TextInput
   end
 
   def draw(bitmap)
+    return unless super bitmap
+
     outside_color = $system.border_color
     inside_color = $system.interior_color
     spacing = 3
@@ -96,6 +101,12 @@ class TextInput
     bitmap.fill_rect(inside_rect, inside_color)
 
     if @text != ""
+      bfont = bitmap.font
+
+      font = Font.new(bfont.name, @font_size)
+      font.color = Color.new(0, 0, 0)
+      bitmap.font = font
+
       char_width = bitmap.text_size(@text[0]).width
       char_height = bitmap.text_size(@text[0]).height
       text = @text.wrap((inside_rect.width - 4) / char_width)
@@ -113,6 +124,8 @@ class TextInput
         bitmap.draw_text(x, y, char_width, char_height, char, 1)
         index += 1
       end
+
+      bitmap.font = bfont
     else
       bfont = bitmap.font
 
@@ -131,22 +144,6 @@ class TextInput
 
       bitmap.font = bfont
     end
-  end
-
-  def width
-    return @rect.width
-  end
-
-  def height
-    return @rect.height
-  end
-
-  def x
-    return @rect.x
-  end
-
-  def y
-    return @rect.y
   end
 
   def on_click(&block)

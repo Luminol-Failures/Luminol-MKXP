@@ -1,11 +1,12 @@
 class MegaBitmap
-    attr_reader :width, :height, :rect, :disposed?
+    attr_reader :width, :height, :rect, :disposed
+
     def initialize(width, height)
         @width = width
         @height = height
         
         @rect = Rect.new(0, 0, width, height)
-        @disposed? = false
+        @disposed = false
 
         
 

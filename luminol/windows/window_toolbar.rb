@@ -6,7 +6,6 @@ require_relative "window_projectpicker"
 class Window_ToolBar < Window_Selectable
   def initialize
     super(0, 0, Graphics.width, 64)
-    self.contents = Bitmap.new(self.width - 32, self.height - 32)
 
     self.on_resize do |width, height|
       self.contents.dispose

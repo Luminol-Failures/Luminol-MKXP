@@ -38,7 +38,10 @@ class System
     rgb_bottom: 19,
 
     directory: 20,
-  }
+    pageleft: 21,
+    pagemiddle: 22,
+    pageright: 23,
+  }.freeze
 
   CURSOR_TYPES = {
     upright: 0,
@@ -59,8 +62,8 @@ class System
     text: 12,
     hand: 13,
     tile: 14,
-    yes: 15,
-  }
+    yes: 15
+  }.freeze
 
   def initialize
     @working_dir = Dir.pwd

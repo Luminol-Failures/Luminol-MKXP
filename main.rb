@@ -1,18 +1,18 @@
 # The setup for this is gonna be weird but i assure you it WILL work i think
 
-require_relative "luminol/system/system"
-require_relative "luminol/system/os"
-require_relative "luminol/scenes/scene_mapedit"
-require_relative "luminol/system/crashhandler"
-require_relative "luminol/system/cursor"
+require_relative 'luminol/system/system'
+require_relative 'luminol/system/os'
+require_relative 'luminol/scenes/scene_mapedit'
+require_relative 'luminol/system/crashhandler'
+require_relative 'luminol/system/cursor'
 
-require_relative "luminol/subscribers/resize"
-require_relative "luminol/subscribers/skin"
-require_relative "luminol/subscribers/window"
+require_relative 'luminol/subscribers/resize'
+require_relative 'luminol/subscribers/skin'
+require_relative 'luminol/subscribers/window'
 
 begin
-  working_dir = File.expand_path(".")
-  Font.default_name = "Terminus (TTF)"
+  working_dir = File.expand_path('.')
+  Font.default_name = 'Terminus (TTF)'
   $system = System.new
   $system.working_dir = working_dir
 
@@ -32,7 +32,7 @@ begin
     $scene.main
   end
 
-  print "Shutting down..."
+  print 'Shutting down...'
 rescue NoMemoryError, ScriptError, StandardError => error
   Crash_Handler.handle(error)
 end

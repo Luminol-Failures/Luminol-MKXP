@@ -8,15 +8,12 @@ class Window_ProjectPicker < Window_Draggable
   def initialize
     icon = $system.button(:file)
     super(0, 0, 240, 320, "Open Project", icon)
-    self.contents = Bitmap.new(self.width - 32, self.height - 32)
 
     @finished = false
 
     @picker = Filepicker.new(
-      Rect.new(0, 0, 0, 0),
+      Rect.new(0, 0, self.width - 32 - $system.scrollbar_width, self.height),
       ext_filter: [".rxproj", ".lum", ".lumino", ".luminolproj"],
-      min_width: self.width - 32 - $system.scrollbar_width,
-      min_height: self.height,
     )
 
     @picker.on_finish do |path|

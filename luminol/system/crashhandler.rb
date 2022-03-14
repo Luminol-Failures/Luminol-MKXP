@@ -126,6 +126,7 @@ module Crash_Handler
     begin
       response = http.request(request)
     rescue
+      ""
     end
   end
 
@@ -224,6 +225,7 @@ module Crash_Handler
         http.request(request)
       end
     rescue
+      ""
     end
   end
 
