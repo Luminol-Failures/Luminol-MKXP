@@ -1,8 +1,10 @@
-class Slider
+require_relative 'widget'
+
+class Slider < Widget
   attr_accessor :value # Allow other widgets to set the value
 
   def initialize(rect, options = {})
-    @rect = rect
+    super(rect, options)
 
     @minimum = options[:minimum]
     @minimum ||= 0
@@ -36,8 +38,9 @@ class Slider
   end
 
   def draw(bitmap)
-    src_bitmap = Bitmap.new(self.width, self.height)
+    return unless super bitmap
 
+    src_bitmap = Bitmap.new(self.width, self.height)
     w_width = self.width - 8
     w_height = self.height - 8
     if @horizontal
@@ -121,6 +124,8 @@ class Slider
   # ALL HAIL THE SPAGHETTI GODS
 
   def update(window)
+    return unless super window
+
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -246,34 +251,5 @@ class Slider
 
   def on_change(&block)
     @on_change = block
-  end
-
-  def selected?
-    @selected
-  end
-
-  def width
-    @rect.width
-  end
-
-  def height
-    @rect.height
-  end
-
-  def x
-    @rect.x
-  end
-
-  def y
-    @rect.y
-  end
-
-  def inside?(window, x, y)
-    x1 = self.x + window.x + 16
-    y1 = self.y + window.y + 16
-    x2 = x1 + self.width
-    y2 = y1 + self.height
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end

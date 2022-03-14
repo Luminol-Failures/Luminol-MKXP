@@ -1,6 +1,9 @@
-class TonePicker
+require_relative 'widget'
+
+class TonePicker < Widget
   def initialize(rect, options = {})
-    @rect = rect
+    super(rect, options)
+
     @tone = options[:color]
     @tone ||= Tone.new(255, 255, 255)
 
@@ -22,6 +25,8 @@ class TonePicker
   end
 
   def update(window)
+    super(window)
+
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -109,6 +114,8 @@ class TonePicker
   end
 
   def draw(bitmap)
+    super bitmap
+
     src_bitmap = Bitmap.new(@rect.width, @rect.height)
 
     column_width = @rect.width / 5 - 5
@@ -233,34 +240,5 @@ class TonePicker
 
   def on_color_changed(&block)
     @tone_block = block
-  end
-
-  def selected?
-    return @selected
-  end
-
-  def width
-    return @rect.width
-  end
-
-  def height
-    return @rect.height
-  end
-
-  def x
-    return @rect.x
-  end
-
-  def y
-    return @rect.y
-  end
-
-  def inside?(window, x, y)
-    x1 = @rect.x + window.x + 16
-    y1 = @rect.y + window.y + 16
-    x2 = @rect.x + @rect.width + window.x + 16
-    y2 = @rect.y + @rect.height + window.y + 16
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end

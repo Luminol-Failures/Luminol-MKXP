@@ -1,44 +1,43 @@
-require_relative "button"
+require_relative 'button'
 
 class RadioButton < Button
   def initialize(rect, options = {})
-    raise "No siblings!" if options[:siblings] == nil
+    raise 'No siblings!' if options[:siblings].nil?
+
     pressed = options[:pressed]
     pressed ||= false
     if pressed
-      super(rect, :radio_pressed, options)
+      super(rect, options)
     else
-      super(rect, :radio_unpressed, options)
+      super(rect, options)
     end
     @state = pressed
     @siblings = options[:siblings]
   end
 
   def update(window)
+    return unless @visible
+
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
 
-      @selected = inside_button?(window, mx, my) # Check if mouse is in button
+      @selected = inside?(window, mx, my) # Check if mouse is in button
 
-      if @selected
-        if Input.trigger?(Input::MOUSELEFT)
-          unless @state # If not already pressed
-            # Unpress siblings
-            id = @siblings.index(self)
-            @siblings.each do |sibling|
-              next if sibling == self
-              sibling.state = false
-            end
+      if @selected && Input.trigger?(Input::MOUSELEFT) && !@state # If not already pressed
+        # Unpress siblings
+        id = @siblings.index(self)
+        @siblings.each do |sibling|
+          next if sibling == self
 
-            @state = true # State is always true when clicked
-            @block.call(id) if @block
-          end
+          sibling.state = false
         end
+
+        @state = true # State is always true when clicked
+        @block&.call(id)
       end
     else
       @selected = false
-      return
     end
   end
 

@@ -1,6 +1,8 @@
-class ColorPicker
+require_relative 'widget'
+
+class ColorPicker < Widget
   def initialize(rect, options = {})
-    @rect = rect
+    super(rect, options)
     @color = options[:color]
     @color ||= Color.new(255, 255, 255)
     @display_alpha = options[:alpha]
@@ -24,6 +26,8 @@ class ColorPicker
   end
 
   def update(window)
+    return unless super window
+
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -112,6 +116,8 @@ class ColorPicker
   end
 
   def draw(bitmap)
+    return unless super bitmap
+
     src_bitmap = Bitmap.new(@rect.width, @rect.height)
     column_width = @rect.width / 4 - 5 unless @display_alpha  # - 2 For padding
     column_width = @rect.width / 5 - 5 if @display_alpha
@@ -213,34 +219,5 @@ class ColorPicker
 
   def on_color_changed(&block)
     @color_block = block
-  end
-
-  def selected?
-    return @selected
-  end
-
-  def width
-    return @rect.width
-  end
-
-  def height
-    return @rect.height
-  end
-
-  def x
-    return @rect.x
-  end
-
-  def y
-    return @rect.y
-  end
-
-  def inside?(window, x, y)
-    x1 = @rect.x + window.x + 16
-    y1 = @rect.y + window.y + 16
-    x2 = @rect.x + @rect.width + window.x + 16
-    y2 = @rect.y + @rect.height + window.y + 16
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end

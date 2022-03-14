@@ -1,9 +1,13 @@
-class List
+require_relative 'widget'
+
+class List < Widget
   attr_accessor :ox, :oy
   attr_accessor :clipped_region
 
-  def initialize(rect, items, options = {})
-    @items = items
+  def initialize(rect, options = {})
+    super rect, options
+
+    @items = options[:items] || []
     @padding = options[:padding]
     @padding ||= 2
     @item_height = options[:item_height]
@@ -33,6 +37,8 @@ class List
   end
 
   def update(window)
+    return unless super window
+
     if MKXP.mouse_in_window
       mx = Input.mouse_x
       my = Input.mouse_y
@@ -51,6 +57,8 @@ class List
   end
 
   def draw(bitmap)
+    return unless super bitmap
+
     width = self.width
     bfont = bitmap.font
     bitmap.font = @font
@@ -75,18 +83,6 @@ class List
 
   def on_select(&block)
     @block = block
-  end
-
-  def selected?
-    return @selected
-  end
-
-  def x
-    @x
-  end
-
-  def y
-    @y
   end
 
   def width
@@ -122,21 +118,5 @@ class List
     b.dispose
 
     return rect
-  end
-
-  def inside?(window, x, y)
-    if @clipped_region
-      x1 = @clipped_region.x + window.x + 16
-      y1 = @clipped_region.y + window.y + 16
-      x2 = x1 + @clipped_region.width
-      y2 = y1 + @clipped_region.height
-    else
-      x1 = self.x + window.x + 16
-      y1 = self.y + window.y + 16
-      x2 = x1 + self.width
-      y2 = y1 + self.height
-    end
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end

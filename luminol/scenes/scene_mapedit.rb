@@ -17,7 +17,7 @@ class Scene_MapEdit
     @picker = Filepicker.new(Rect.new(0, 0, 80, 80))
     @page.add_widget(@picker, 'File picker')
     @items = []
-    @list = List.new(Rect.new(0, 0, 80, 80), @items)
+    @list = List.new(Rect.new(0, 0, 80, 80), items: @items)
     @page.add_widget(@list, 'List test')
 
     @test_window.add_widget(:page, @page)

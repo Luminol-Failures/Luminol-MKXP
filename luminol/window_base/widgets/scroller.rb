@@ -1,9 +1,9 @@
-class Scroller
+require_relative 'widget'
+class Scroller < Widget
   attr_accessor :ox, :oy
 
   def initialize(rect, options = {})
-    @rect = rect
-    @options = options
+    super(rect, options)
 
     @selected = false
     @ox = 0
@@ -57,6 +57,8 @@ class Scroller
   end
 
   def update(window)
+    return unless super window
+
     if @widget
       @widget.update(window)
       # Check if the widget has offset methods (some need to know the offset, but not all)
@@ -142,7 +144,9 @@ class Scroller
   end
 
   def draw(bitmap)
+    return unless super bitmap
     return unless @widget
+
     @contents.clear
 
     # Note to self: some people have shit graphics cards.
@@ -209,36 +213,15 @@ class Scroller
     end
   end
 
-  def selected?
-    return @selected
-  end
-
   def width
     width = @rect.width
     width += $system.scrollbar_width if @scroll_y
-    return width
+    width
   end
 
   def height
     height = @rect.height
     height += $system.scrollbar_width if @scroll_x
-    return height
-  end
-
-  def x
-    return @rect.x
-  end
-
-  def y
-    return @rect.y
-  end
-
-  def inside?(window, x, y)
-    x1 = @rect.x + window.x + 16
-    y1 = @rect.y + window.y + 16
-    x2 = @rect.x + self.width + window.x + 16
-    y2 = @rect.y + self.height + window.y + 16
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+    height
   end
 end
