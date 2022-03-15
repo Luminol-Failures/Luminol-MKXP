@@ -3,6 +3,7 @@ require_relative 'widget'
 class Button < Widget
 
   attr_accessor :state
+  attr_accessor :disabled
 
   def initialize(rect, options = {})
     super(rect, options)
@@ -13,10 +14,14 @@ class Button < Widget
     @unpressed_icon = options[:unpressed_icon]
     @unpressed_icon ||= options[:released_icon]
     @unpressed_icon ||= $system.button(:unpressed)
+
+    @disabled = options[:disabled]
+    @disabled ||= false
   end
 
   def update(window)
     return unless super window
+    return if @disabled
 
     if MKXP.mouse_in_window
       mx = Input.mouse_x
@@ -45,6 +50,7 @@ class Button < Widget
            end
     opacity = @options[:opacity]
     opacity ||= 255
+
     bitmap.stretch_blt(@rect, icon, Rect.new(0, 0, icon.width, icon.height), opacity)
   end
 

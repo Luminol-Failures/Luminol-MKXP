@@ -30,7 +30,7 @@ class Widget
   end
 
   def selected?
-    @selected
+    @selected && @visible
   end
 
   def inside?(window, x, y)

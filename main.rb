@@ -25,7 +25,7 @@ begin
   $cursor = Cursor.new
   $luminol_os = OS.os
 
-  Graphics.frame_rate = 60
+  Graphics.frame_rate = 120
 
   $scene = Scene_MapEdit.new
   while $scene != nil

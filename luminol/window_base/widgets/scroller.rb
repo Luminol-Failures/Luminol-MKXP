@@ -30,10 +30,10 @@ class Scroller < Widget
       @scroll_y = true
     end
 
-    if widget.method(:clipped_region) # Check if widget has a clipped_region method
+    if widget.respond_to?(:clipped_region) # Check if widget has a clipped_region method
       widget.clipped_region = @rect
     end
-    if widget.method(:scroller)
+    if widget.respond_to?(:scroller)
       widget.scroller = self
     end
 

@@ -2,7 +2,7 @@ require_relative 'widget'
 
 class List < Widget
   attr_accessor :ox, :oy
-  attr_accessor :clipped_region
+  attr_accessor :clipped_region, :items
 
   def initialize(rect, options = {})
     super rect, options
@@ -14,10 +14,10 @@ class List < Widget
     @item_height ||= 18
     @item_height += @padding
 
-    @min_height = options[:min_height]
+    @min_height = @rect.height
     @min_height ||= 256
 
-    @min_width = options[:min_width]
+    @min_width = @rect.width
     @min_width ||= 64
 
     @x, @y = rect.x, rect.y
@@ -31,7 +31,8 @@ class List < Widget
     @index = options[:index]
     @index ||= 0
 
-    @ox = @oy = 0
+    @ox = options[:ox] || 0
+    @oy = options[:oy] || 0
 
     @clipped_region = nil
   end
@@ -63,7 +64,7 @@ class List < Widget
     bfont = bitmap.font
     bitmap.font = @font
     (self.height / @item_height.to_f).round.times do |i|
-      rect = Rect.new(0, @item_height * i, width, @item_height)
+      rect = Rect.new(x, @item_height * i + y, width, @item_height)
       color = Color.new(0, 0, 0) if i.even?
       color = Color.new(40, 40, 40) if i.odd?
       color = Color.new(color.red + 80, color.green, color.blue + 100) if @index == i
@@ -74,7 +75,7 @@ class List < Widget
 
       border_color = Color.new(128, 128, 128)
       rect.height = @padding
-      rect.y = @item_height * (i + 1) - @padding
+      rect.y = @item_height * (i + 1) - @padding + y
 
       bitmap.fill_rect(rect, border_color)
     end
