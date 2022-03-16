@@ -68,10 +68,9 @@ class Scroller < Widget
       end
     end
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my) || @scrolling_x || @scrolling_y
+      @selected = mouse_inside_widget?(window)
 
       @selected = @widget.selected? if @widget && !@selected
 
@@ -97,9 +96,9 @@ class Scroller < Widget
         scroll_y_height = @rect.height * scroll_y_ratio
         scrollbar_y = scroll_y_ratio * @oy
         if @scroll_x && Input.trigger?(Input::MOUSELEFT)
-          x1 = @rect.x + scrollbar_x + 16 + window.x
+          x1 = @rect.x + scrollbar_x
           x2 = x1 + scroll_x_width
-          y1 = @rect.y + @rect.height + 16 + window.y
+          y1 = @rect.y + @rect.height
           y2 = y1 + $system.scrollbar_width
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
@@ -109,9 +108,9 @@ class Scroller < Widget
           end
         end
         if @scroll_y && Input.trigger?(Input::MOUSELEFT)
-          x1 = @rect.x + @rect.width + 16 + window.x
+          x1 = @rect.x + @rect.width
           x2 = x1 + $system.scrollbar_width
-          y1 = @rect.y + scrollbar_y + 16 + window.y
+          y1 = @rect.y + scrollbar_y
           y2 = y1 + scroll_y_height
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2

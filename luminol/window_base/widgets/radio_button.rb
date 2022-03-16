@@ -19,10 +19,9 @@ class RadioButton < Button
     return unless @visible
 
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my) # Check if mouse is in button
+      @selected = mouse_inside_widget?(window)
 
       if @selected && Input.trigger?(Input::MOUSELEFT) && !@state # If not already pressed
         # Unpress siblings

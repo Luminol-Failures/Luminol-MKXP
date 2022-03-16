@@ -1,5 +1,8 @@
-class NumberInput
+require_relative 'widget'
+
+class NumberInput < Widget
   def initialize(rect, options = {})
+    super(rect, options)
     @rect = rect
     @rect.height = 32 # Always force height to 32
 
@@ -15,19 +18,19 @@ class NumberInput
   end
 
   def update(window)
-    if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+    return unless super window
 
-      @selected = inside?(window, mx, my) # Check if mouse is in textinput
+    mx, my = get_mouse_pos(window)
 
-      x1 = self.x + window.x + 16 + (self.width - 20)
-      x2 = self.x + self.width + window.x + 16
-      y1 = self.y + window.y + 16
+    @selected = mouse_inside_widget?(window)
+
+      x1 = self.x + (self.width - 20)
+      x2 = self.x + self.width
+      y1 = self.y
       y2 = y1 + self.height
 
       if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) # If in non manual input area
-        y1 = self.y + window.y + 16 + 16
+        y1 = self.y + 16
         if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) && Input.trigger?(Input::MOUSELEFT) # Down
           @value -= 1
           @value = @minimum if @value < @minimum
@@ -35,7 +38,7 @@ class NumberInput
           window.draw
         end
 
-        y1 = self.y + window.y + 16
+        y1 = self.y
         y2 = y1 + 16
         if (mx >= x1 && mx <= x2 && my >= y1 && my <= y2) && Input.trigger?(Input::MOUSELEFT) # Up
           @value += 1
@@ -84,6 +87,8 @@ class NumberInput
   end
 
   def draw(bitmap)
+    return unless super bitmap
+
     title_pieces = []
     8.times do |i|
       title_pieces << $system.titlebar_element(i)
@@ -123,23 +128,7 @@ class NumberInput
   end
 
   def selected?
-    @selected || @active
-  end
-
-  def width
-    return @rect.width
-  end
-
-  def height
-    return @rect.height
-  end
-
-  def x
-    return @rect.x
-  end
-
-  def y
-    return @rect.y
+    super || @active
   end
 
   def value
@@ -150,14 +139,5 @@ class NumberInput
     @value = value
     @manual_value = value.to_s
     Input.set_text_input(@manual_value) if @active
-  end
-
-  def inside?(window, x, y)
-    x1 = self.x + window.x + 16
-    y1 = self.y + window.y + 16
-    x2 = x1 + self.width
-    y2 = y1 + self.height
-
-    return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
   end
 end

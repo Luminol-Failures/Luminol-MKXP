@@ -21,10 +21,9 @@ class Page < Widget
 
     refresh_widgets window
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my)
+      @selected = mouse_inside_widget?(window)
 
       if @selected && Input.trigger?(Input::MOUSELEFT)
         last_x = 0
@@ -36,9 +35,9 @@ class Page < Widget
                            (text_width / 16.0).ceil
                          end
 
-          x1 = last_x + 16 + x + window.x
+          x1 = last_x
           x2 = x1 + boxes_needed * 16
-          y1 = y + 16 + window.y
+          y1 = y
           y2 = y1 + 16
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2

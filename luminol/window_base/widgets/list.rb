@@ -41,13 +41,12 @@ class List < Widget
     return unless super window
 
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my) # Check if mouse is in list
+      @selected = mouse_inside_widget?(window)
 
       if Input.trigger?(Input::MOUSELEFT) && @selected
-        @index = ((my - self.y - window.y - 16 + @oy) / @item_height)
+        @index = (@oy / @item_height)
         @block.call(@index) if @block
         window.draw
       end

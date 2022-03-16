@@ -28,21 +28,20 @@ class TonePicker < Widget
     super(window)
 
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my) # Check if mouse is in button
+      @selected = mouse_inside_widget?(window)
 
       if @selected || @dragging
         column_width = @rect.width / 5 - 5 # - 2 For padding
 
-        red_x = self.x + window.x + 16 + column_width + 8
-        green_x = self.x + window.x + 16 + column_width * 2 + 12
-        blue_x = self.x + window.x + 16 + column_width * 3 + 16
-        gray_x = self.x + window.x + 16 + column_width * 4 + 20
+        red_x = self.x + column_width + 8
+        green_x = self.x + column_width * 2 + 12
+        blue_x = self.x + column_width * 3 + 16
+        gray_x = self.x + column_width * 4 + 20
 
-        all_y = self.y + window.y + 4 + 16
-        all_end_y = self.y + window.y + 16 + @rect.height - 8
+        all_y = self.y + 4
+        all_end_y = self.y + @rect.height - 8
 
         if Input.trigger?(Input::MOUSELEFT)
           if mx >= red_x && mx <= red_x + column_width && my >= all_y && my <= all_end_y
@@ -77,7 +76,7 @@ class TonePicker < Widget
         if @dragging && Input.press?(Input::MOUSELEFT)
           height_ratio = (@rect.height - 8) / (255.0 * 2 + 1)
 	  height_ratio = (@rect.height - 8) / (255.0 + 1) if @dragging_bar == :gray
-          value = 255 - (my - self.y - window.y - 16 - 4) / height_ratio
+          value = 255 - (my - self.y - 4) / height_ratio
           value = value.clamp(-255, 255)
           value = value.clamp(0, 255) if @dragging_bar == :gray
           case @dragging_bar

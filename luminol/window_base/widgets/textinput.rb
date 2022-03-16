@@ -33,10 +33,9 @@ class TextInput < Widget
   def update(window)
     return unless super window
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
 
-      @selected = inside?(window, mx, my) # Check if mouse is in textinput
+      @selected = mouse_inside_widget?(window)
 
       if Input.trigger?(Input::MOUSELEFT) && @selected
         @active = true
