@@ -24,10 +24,9 @@ class Button < Widget
     return if @disabled
 
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos window
 
-      @selected = inside?(window, mx, my) # Check if mouse is in button
+      @selected = mouse_inside_widget?(window) # Check if mouse is in button
 
       if @selected
         if Input.trigger?(Input::MOUSELEFT)

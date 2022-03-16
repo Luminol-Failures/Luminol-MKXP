@@ -1,7 +1,7 @@
 require_relative "../../system/os"
 require_relative 'widget'
 class Filepicker < Widget
-  attr_accessor :ox, :oy, :clipped_region, :current_directory, :scroller, :min_width, :min_height
+  attr_accessor :clipped_region, :current_directory, :scroller, :min_width, :min_height
   attr_reader :selected_file, :starting_directory, :index, :current_drive
 
   def initialize(rect, options = {})
@@ -16,7 +16,6 @@ class Filepicker < Widget
     @ext_filter = options[:ext_filter]
     @ext_filter ||= []
 
-    @ox = @oy = 0
     @clipped_region = nil
 
     @file_icon = $system.button(:file)
@@ -88,13 +87,14 @@ class Filepicker < Widget
     return unless super window
 
     if MKXP.mouse_in_window || @selected
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos(window)
+      STDERR.puts "mx: #{mx} my: #{my}"
 
-      @selected = inside?(window, mx, my) # Check if mouse is in list
+      @selected = mouse_inside_widget?(window) # Check if mouse is in list
 
       if @selected && Input.trigger?(Input::MOUSELEFT)
-        index = ((my - self.y - window.y - 16 + @oy) / @item_height)
+        index = (my / @item_height)
+        STDERR.puts index
         if @index != index
           @index = index
           @on_select.call(@children[index]) if @on_select

@@ -1,6 +1,6 @@
 class Widget
   attr_reader :rect, :x, :y, :width, :height
-  attr_accessor :visible
+  attr_accessor :visible, :ox, :oy
 
   def initialize(rect, options = {})
     @rect = rect
@@ -13,6 +13,9 @@ class Widget
 
     @clipped_region = nil
     @visible = true
+
+    @ox = 0
+    @oy = 0
   end
 
   def update(_window)
@@ -47,5 +50,19 @@ class Widget
     end
 
     return (x >= x1 && x <= x2 && y >= y1 && y <= y2)
+  end
+
+  def mouse_inside_widget?(window)
+    inside?(window, Input.mouse_x, Input.mouse_y)
+  end
+
+  def get_mouse_pos(window = nil) # RELATIVE TO WIDGET!!
+    mx = Input.mouse_x + @ox - 16 - self.x
+    my = Input.mouse_y + @oy - 16 - self.y
+
+    mx -= window.x unless window.nil?
+    my -= window.y unless window.nil?
+
+    return mx, my
   end
 end

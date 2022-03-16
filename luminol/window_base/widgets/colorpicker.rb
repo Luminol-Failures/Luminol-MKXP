@@ -29,10 +29,9 @@ class ColorPicker < Widget
     return unless super window
 
     if MKXP.mouse_in_window
-      mx = Input.mouse_x
-      my = Input.mouse_y
+      mx, my = get_mouse_pos window
 
-      @selected = inside?(window, mx, my) # Check if mouse is in button
+      @selected = mouse_inside_widget?(window) # Check if mouse is in button
 
       if @selected || @dragging
         column_width = @rect.width / 4 - 5 unless @display_alpha # - 2 For padding
