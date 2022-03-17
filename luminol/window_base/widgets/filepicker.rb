@@ -1,7 +1,7 @@
 require_relative "../../system/os"
 require_relative 'widget'
 class Filepicker < Widget
-  attr_accessor :clipped_region, :current_directory, :scroller, :min_width, :min_height
+  attr_accessor :clipped_region, :current_directory, :min_width, :min_height
   attr_reader :selected_file, :starting_directory, :index, :current_drive
 
   def initialize(rect, options = {})
@@ -111,10 +111,7 @@ class Filepicker < Widget
 
             @on_navigate.call(@current_directory) if @on_navigate
             setup_children
-            if @scroller
-              @scroller.ox = 0
-              @scroller.oy = 0
-            end
+
             @index = -1
             window.draw
           elsif File.directory?(File.join(@current_directory, @children[index])) || @drive_picker
@@ -125,10 +122,7 @@ class Filepicker < Widget
             end
             @drive_picker = false
             @on_navigate.call(@current_directory) if @on_navigate
-            if @scroller
-              @scroller.ox = 0
-              @scroller.oy = 0
-            end
+
             setup_children
             @index = -1
             window.draw

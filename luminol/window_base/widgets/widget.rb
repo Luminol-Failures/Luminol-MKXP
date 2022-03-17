@@ -1,6 +1,6 @@
 class Widget
   attr_reader :rect, :x, :y, :width, :height
-  attr_accessor :visible, :ox, :oy
+  attr_accessor :visible, :ox, :oy, :draw_on_next_update
 
   def initialize(rect, options = {})
     @rect = rect
@@ -16,10 +16,16 @@ class Widget
 
     @ox = 0
     @oy = 0
+    @draw_on_next_update = false
   end
 
-  def update(_window)
+  def update(window)
     return false unless @visible
+    
+    if @draw_on_next_update
+      window.draw
+      @draw_on_next_update = false
+    end
 
     # Dummy method to be overridden by subclasses
     true

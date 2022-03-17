@@ -52,10 +52,20 @@ class Scroller < Widget
       @widget.width,
       @widget.height
     )
+    @widget_ox = 0
+    @widget_oy = 0
+    refresh_contents
+
+    @draw_on_next_update = true
   end
 
   def update(window)
     return unless super window
+
+    if @widget.width != @contents.width || @widget.height != @contents.height
+      @contents.dispose
+      setup_contents
+    end
 
     if @widget
       @widget.update(window)
@@ -149,11 +159,6 @@ class Scroller < Widget
     # Note to self: some people have shit graphics cards.
     # this may exceed the maximum texture size.
     # TODO: find a way to fix this.
-    if @widget.width > @contents.width || @widget.height > @contents.height
-      @contents.dispose
-      setup_contents
-      refresh_contents
-    end
     @widget.draw(@contents) if @widget
 
     # Draw background

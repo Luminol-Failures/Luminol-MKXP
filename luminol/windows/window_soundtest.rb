@@ -56,12 +56,17 @@ class Window_SoundTest < Window_Draggable
     @bgm_plane.add_widget(:pitch, @pitch_slider)
 
     $projectsignal.on_call do |path|
-      @bgm_list.items = Dir.children(path + "/Audio/BGM/")
+      begin 
+        @bgm_list.items = Dir.children(path + "/Audio/BGM/")
+      rescue 
+        @bgm_list.items = []
+        print "Audio/BGM/ missing!"
+      end
       draw
     end
 
     @bgm_list.on_select do |item, _|
-      raise "FILE MISSING!" unless File.exist?($system.working_dir + "/Audio/BGM/" + item)
+      print "FILE MISSING!" unless File.exist?($system.working_dir + "/Audio/BGM/" + item)
       @bgm = item
       draw
     end

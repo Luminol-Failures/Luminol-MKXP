@@ -22,6 +22,7 @@ class Window_ProjectPicker < Window_Draggable
       $system.working_dir = path
       self.close
       $projectsignal.notify(path)
+      PathCache.mount(path)
     end
 
     @scroller = Scroller.new(
