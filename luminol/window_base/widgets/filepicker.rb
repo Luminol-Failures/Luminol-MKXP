@@ -88,13 +88,11 @@ class Filepicker < Widget
 
     if MKXP.mouse_in_window || @selected
       mx, my = get_mouse_pos(window)
-      STDERR.puts "mx: #{mx} my: #{my}"
 
       @selected = mouse_inside_widget?(window) # Check if mouse is in list
 
       if @selected && Input.trigger?(Input::MOUSELEFT)
         index = (my / @item_height)
-        STDERR.puts index
         if @index != index
           @index = index
           @on_select.call(@children[index]) if @on_select

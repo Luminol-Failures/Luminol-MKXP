@@ -9,6 +9,7 @@ require_relative 'luminol/system/cursor'
 require_relative 'luminol/subscribers/resize'
 require_relative 'luminol/subscribers/skin'
 require_relative 'luminol/subscribers/window'
+require_relative 'luminol/subscribers/project'
 
 begin
   working_dir = File.expand_path('.')
@@ -19,6 +20,7 @@ begin
   $resizesignal = ResizeSignal.new
   $skinsignal = SkinSignal.new
   $windowsignal = WindowSignal.new
+  $projectsignal = ProjectSignal.new
 
   Graphics.show_cursor = false
 

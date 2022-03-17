@@ -4,6 +4,8 @@ require_relative '../window_base/widgets/page'
 require_relative '../window_base/widgets/list'
 require_relative '../window_base/widgets/scroller'
 
+require_relative '../subscribers/project'
+
 class Window_SoundTest < Window_Draggable
   def initialize
     super(0, 0, 270, 470, 'Sound Test', $system.button(:note))
@@ -20,7 +22,17 @@ class Window_SoundTest < Window_Draggable
     @page.add_widget(@me_plane, "ME")
     @page.add_widget(@se_plane, "SE")
 
+    @bgm_list = List.new(Rect.new(0, 0, 128, 256), items: [])
+    @bgm_scroller = Scroller.new(Rect.new(16, 16, 128, 256))
+    @bgm_scroller.add_widget(@bgm_list)
+    @bgm_plane.add_widget(:scroller, @bgm_scroller)
+
     add_widget(:page, @page)
+
+    $projectsignal.on_call do |path|
+      @bgm_list.items = Dir.children(path + "/Audio/BGM/")
+      draw
+    end
   end
 
   def open

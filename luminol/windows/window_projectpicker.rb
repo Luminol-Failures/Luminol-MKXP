@@ -1,6 +1,7 @@
 require_relative "../window_base/window_draggable"
 require_relative "../window_base/widgets/filepicker"
 require_relative "../window_base/widgets/scroller"
+require_relative '../subscribers/project'
 
 class Window_ProjectPicker < Window_Draggable
   attr_reader :finished
@@ -18,8 +19,12 @@ class Window_ProjectPicker < Window_Draggable
 
     @picker.on_finish do |path|
       @finished = true
+      p = path[0]
+      a = p.split("/")
+      p = a[0..(a.size - 1)]
       $system.working_dir = path
       self.close
+      $projectsignal.notify(path)
     end
 
     @scroller = Scroller.new(
