@@ -134,7 +134,7 @@ class Filepicker < Widget
             window.draw
           else
             @selected_file = File.join(@current_directory, @children[index])
-            @on_finish.call(@selected_file) if @on_finish
+            @on_finish.call(@current_directory, @selected_file) if @on_finish
           end
         end
       end

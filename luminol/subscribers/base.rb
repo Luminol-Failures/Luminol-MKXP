@@ -23,7 +23,7 @@ class BaseSignal
 
   def notify(*args)
     @subscribers.each do |subscriber|
-      subscriber.call(args)
+      subscriber.call(*args)
     end
   end
 

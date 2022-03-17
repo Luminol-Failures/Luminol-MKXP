@@ -17,11 +17,8 @@ class Window_ProjectPicker < Window_Draggable
       ext_filter: [".rxproj", ".lum", ".lumino", ".luminolproj"],
     )
 
-    @picker.on_finish do |path|
+    @picker.on_finish do |path, _|
       @finished = true
-      p = path[0]
-      a = p.split("/")
-      p = a[0..(a.size - 1)]
       $system.working_dir = path
       self.close
       $projectsignal.notify(path)

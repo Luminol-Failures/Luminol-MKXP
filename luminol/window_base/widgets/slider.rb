@@ -128,8 +128,17 @@ class Slider < Widget
 
     if MKXP.mouse_in_window
       mx, my = get_mouse_pos(window)
+      my -= 32
 
       @selected = mouse_inside_widget?(window)
+
+      if Input.mouse_scroll && @selected && !@dragging
+        if @horizontal
+          @value += Input.mouse_scroll_x * @major_tick
+        else
+          @value += Input.mouse_scroll_y * @major_tick
+        end
+      end
 
       if @dragging || @selected
         w_width = self.width - 8
@@ -138,9 +147,9 @@ class Slider < Widget
           range = @maximum - @minimum
           scale = w_width / range.to_f # How many units per pixel
 
-          slider_y = self.y + 4
+          slider_y = 4
           if @reversed
-            slider_x = self.x + ((self.value - @minimum) * scale - 1)
+            slider_x = ((self.value - @minimum) * scale - 1)
 
             x1 = slider_x
             x2 = slider_x + 16
@@ -154,13 +163,13 @@ class Slider < Widget
             end
 
             if Input.press?(Input::MOUSELEFT) && @dragging
-              @value = @minimum + ((mx - @drag_x - self.x) / scale).to_i
+              @value = @minimum + ((mx - @drag_x) / scale).to_i
             else
               @dragging = false
               @on_change.call(@value) if @on_change
             end
           else
-            slider_x = self.x + ((@maximum - self.value) * scale - 1)
+            slider_x = ((@maximum - self.value) * scale - 1)
 
             x1 = slider_x
             x2 = slider_x + 16
@@ -174,7 +183,7 @@ class Slider < Widget
             end
 
             if Input.press?(Input::MOUSELEFT) && @dragging
-              @value = @maximum - ((mx - self.x - @drag_x) / scale).to_i
+              @value = @maximum - ((mx - @drag_x) / scale).to_i
             else
               @dragging = false
               @on_change.call(@value) if @on_change
@@ -184,9 +193,9 @@ class Slider < Widget
           range = @maximum - @minimum
           scale = w_height / range.to_f # How many units per pixel
 
-          slider_x = self.x + 4
+          slider_x = 4
           if @reversed
-            slider_y = self.y + ((self.value - @minimum) * scale - 1)
+            slider_y = ((self.value - @minimum) * scale - 1)
 
             x1 = slider_x
             x2 = slider_x + 16
@@ -200,13 +209,13 @@ class Slider < Widget
             end
 
             if Input.press?(Input::MOUSELEFT) && @dragging
-              @value = @minimum + ((my - self.y - @drag_y) / scale).to_i
+              @value = @minimum + ((my - @drag_y) / scale).to_i
             else
               @dragging = false
               @on_change.call(@value) if @on_change
             end
           else
-            slider_y = self.y + ((@maximum - self.value) * scale - 1)
+            slider_y = ((@maximum - self.value) * scale - 1)
 
             x1 = slider_x
             x2 = slider_x + 16
@@ -220,7 +229,7 @@ class Slider < Widget
             end
 
             if Input.press?(Input::MOUSELEFT) && @dragging
-              @value = @maximum - ((my - self.y - @drag_y) / scale).to_i
+              @value = @maximum - ((my - @drag_y) / scale).to_i
             else
               @dragging = false
               @on_change.call(@value) if @on_change

@@ -75,7 +75,7 @@ class Scroller < Widget
       if @selected && @widget
         if Input.mouse_scroll
           if @scroll_x && Input.mouse_scroll_x != 0
-            @widget_ox = (@widget_ox - Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
+            @widget_ox = (@widget_ox + Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
           end
 
           if @scroll_y && Input.mouse_scroll_y != 0
@@ -86,17 +86,17 @@ class Scroller < Widget
       end
 
       if @widget && @selected
-        scroll_x_ratio = @rect.width.to_f / @widget.width
-        scroll_x_width = @rect.width * scroll_x_ratio
+        scroll_x_ratio = width.to_f / @widget.width
+        scroll_x_width = width * scroll_x_ratio
         scrollbar_x = scroll_x_ratio * @widget_ox
 
-        scroll_y_ratio = @rect.height.to_f / @widget.height
-        scroll_y_height = @rect.height * scroll_y_ratio
+        scroll_y_ratio = height.to_f / @widget.height
+        scroll_y_height = height * scroll_y_ratio
         scrollbar_y = scroll_y_ratio * @widget_oy
         if @scroll_x && Input.trigger?(Input::MOUSELEFT)
-          x1 = @rect.x + scrollbar_x
+          x1 = scrollbar_x
           x2 = x1 + scroll_x_width
-          y1 = @rect.y + @rect.height
+          y1 = height
           y2 = y1 + $system.scrollbar_width
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
@@ -106,9 +106,9 @@ class Scroller < Widget
           end
         end
         if @scroll_y && Input.trigger?(Input::MOUSELEFT)
-          x1 = @rect.x + @rect.width
+          x1 = width
           x2 = x1 + $system.scrollbar_width
-          y1 = @rect.y + scrollbar_y
+          y1 = scrollbar_y
           y2 = y1 + scroll_y_height
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
@@ -120,7 +120,7 @@ class Scroller < Widget
 
         if @scrolling_x && Input.press?(Input::MOUSELEFT)
           @widget_ox = (@drag_ox + (mx - @drag_x)) / scroll_x_ratio
-          @widget_ox = @widget_ox.clamp(0, @widget.width - @rect.width)
+          @widget_ox = @widget_ox.clamp(0, @widget.width - width)
           window.draw
         else
           @scrolling_x = false
@@ -128,7 +128,7 @@ class Scroller < Widget
 
         if @scrolling_y && Input.press?(Input::MOUSELEFT)
           @widget_oy = (@drag_oy + (my - @drag_y)) / scroll_y_ratio
-          @widget_oy = @widget_oy.clamp(0, @widget.height - @rect.height)
+          @widget_oy = @widget_oy.clamp(0, @widget.height - height)
           window.draw
         else
           @scrolling_y = false
@@ -157,11 +157,7 @@ class Scroller < Widget
     @widget.draw(@contents) if @widget
 
     # Draw background
-    width = @rect.width
-    height = @rect.height
-    width += $system.scrollbar_width if @scroll_y
-    height += $system.scrollbar_width if @scroll_x
-    bg_rect = Rect.new(@rect.x, @rect.y, width, height)
+    bg_rect = Rect.new(x, y, self.width, self.height)
     bitmap.fill_rect(bg_rect, Color.new(48, 48, 48))
 
     # Copy the contents of the widget to the scroller
@@ -178,13 +174,13 @@ class Scroller < Widget
 
     # Draw the scrollbar
     if @scroll_x
-      scroll_x_ratio = @rect.width.to_f / @widget.width
-      scroll_x_width = @rect.width * scroll_x_ratio
+      scroll_x_ratio = self.width.to_f / @widget.width
+      scroll_x_width = self.width * scroll_x_ratio
       scrollbar_x = scroll_x_ratio * @widget_ox
       bitmap.stretch_blt(
         Rect.new(
-          @rect.x + scrollbar_x,
-          @rect.y + @rect.height,
+          x + scrollbar_x,
+          y + @rect.height,
           scroll_x_width,
           $system.scrollbar_width
         ),
@@ -194,13 +190,13 @@ class Scroller < Widget
     end
 
     if @scroll_y
-      scroll_y_ratio = @rect.height.to_f / @widget.height
-      scroll_y_height = @rect.height * scroll_y_ratio
+      scroll_y_ratio = self.height.to_f / @widget.height
+      scroll_y_height = self .height * scroll_y_ratio
       scrollbar_y = scroll_y_ratio * @widget_oy
       bitmap.stretch_blt(
         Rect.new(
-          @rect.x + @rect.width,
-          @rect.y + scrollbar_y,
+          x + @rect.width,
+          y + scrollbar_y,
           $system.scrollbar_width,
           scroll_y_height
         ),
