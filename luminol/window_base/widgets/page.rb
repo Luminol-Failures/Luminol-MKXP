@@ -68,7 +68,7 @@ class Page < Widget
     topbar = Bitmap.new(width, 32)
 
     construct_topbar(topbar)
-    bitmap.fill_rect(0, 0, width, height, Color.new(28 , 28, 28))
+    bitmap.fill_rect(x, y, width, height, Color.new(28 , 28, 28))
     @widgets[@index]&.draw(contents)
 
     bitmap.blt(x, y + 16, contents, @rect)
@@ -125,7 +125,7 @@ class Page < Widget
 
   def add_widget(widget, page)
     widget.clipped_region = @rect if widget.respond_to?(:clipped_region) # Check if widget has a clipped_region method
-    widget.oy = -16 if widget.respond_to?(:oy) # Check if widget has a oy method
+    widget.oy -= 16 + y
     widget.visible = false
 
     @widgets << widget

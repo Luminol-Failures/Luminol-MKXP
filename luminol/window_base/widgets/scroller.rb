@@ -1,13 +1,11 @@
 require_relative 'widget'
 class Scroller < Widget
-  attr_accessor :ox, :oy
-
   def initialize(rect, options = {})
     super(rect, options)
 
     @selected = false
-    @ox = 0
-    @oy = 0
+    @widget_ox = 0
+    @widget_oy = 0
 
     @scroll_x = false
     @scroll_y = false
@@ -62,10 +60,10 @@ class Scroller < Widget
     if @widget
       @widget.update(window)
       # Check if the widget has offset methods (some need to know the offset, but not all)
-      if @widget.methods.include?(:ox)
-        @widget.ox = @ox
-        @widget.oy = @oy
-      end
+
+      @widget.ox = @widget_ox - x - ox
+      @widget.oy = @widget_oy - y - ox
+
     end
     if MKXP.mouse_in_window
       mx, my = get_mouse_pos(window)
@@ -77,11 +75,11 @@ class Scroller < Widget
       if @selected && @widget
         if Input.mouse_scroll
           if @scroll_x && Input.mouse_scroll_x != 0
-            @ox = (@ox - Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
+            @widget_ox = (@widget_ox - Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
           end
 
           if @scroll_y && Input.mouse_scroll_y != 0
-            @oy = (@oy - Input.mouse_scroll_y * $system.scroll_speed_multiplier).clamp(0, @widget.height - @rect.height)
+            @widget_oy = (@widget_oy - Input.mouse_scroll_y * $system.scroll_speed_multiplier).clamp(0, @widget.height - @rect.height)
           end
           window.draw
         end
@@ -90,11 +88,11 @@ class Scroller < Widget
       if @widget && @selected
         scroll_x_ratio = @rect.width.to_f / @widget.width
         scroll_x_width = @rect.width * scroll_x_ratio
-        scrollbar_x = scroll_x_ratio * @ox
+        scrollbar_x = scroll_x_ratio * @widget_ox
 
         scroll_y_ratio = @rect.height.to_f / @widget.height
         scroll_y_height = @rect.height * scroll_y_ratio
-        scrollbar_y = scroll_y_ratio * @oy
+        scrollbar_y = scroll_y_ratio * @widget_oy
         if @scroll_x && Input.trigger?(Input::MOUSELEFT)
           x1 = @rect.x + scrollbar_x
           x2 = x1 + scroll_x_width
@@ -104,7 +102,7 @@ class Scroller < Widget
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
             @scrolling_x = true
             @drag_x = mx
-            @drag_ox = @ox
+            @drag_ox = @widget_ox
           end
         end
         if @scroll_y && Input.trigger?(Input::MOUSELEFT)
@@ -116,21 +114,21 @@ class Scroller < Widget
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
             @scrolling_y = true
             @drag_y = my
-            @drag_oy = @oy
+            @drag_oy = @widget_oy
           end
         end
 
         if @scrolling_x && Input.press?(Input::MOUSELEFT)
-          @ox = (@drag_ox + (mx - @drag_x)) / scroll_x_ratio
-          @ox = @ox.clamp(0, @widget.width - @rect.width)
+          @widget_ox = (@drag_ox + (mx - @drag_x)) / scroll_x_ratio
+          @widget_ox = @widget_ox.clamp(0, @widget.width - @rect.width)
           window.draw
         else
           @scrolling_x = false
         end
 
         if @scrolling_y && Input.press?(Input::MOUSELEFT)
-          @oy = (@drag_oy + (my - @drag_y)) / scroll_y_ratio
-          @oy = @oy.clamp(0, @widget.height - @rect.height)
+          @widget_oy = (@drag_oy + (my - @drag_y)) / scroll_y_ratio
+          @widget_oy = @widget_oy.clamp(0, @widget.height - @rect.height)
           window.draw
         else
           @scrolling_y = false
@@ -171,8 +169,8 @@ class Scroller < Widget
       @rect,
       @contents,
       Rect.new(
-        @ox,
-        @oy,
+        @widget_ox,
+        @widget_oy,
         @rect.width,
         @rect.height
       )
@@ -182,7 +180,7 @@ class Scroller < Widget
     if @scroll_x
       scroll_x_ratio = @rect.width.to_f / @widget.width
       scroll_x_width = @rect.width * scroll_x_ratio
-      scrollbar_x = scroll_x_ratio * @ox
+      scrollbar_x = scroll_x_ratio * @widget_ox
       bitmap.stretch_blt(
         Rect.new(
           @rect.x + scrollbar_x,
@@ -198,7 +196,7 @@ class Scroller < Widget
     if @scroll_y
       scroll_y_ratio = @rect.height.to_f / @widget.height
       scroll_y_height = @rect.height * scroll_y_ratio
-      scrollbar_y = scroll_y_ratio * @oy
+      scrollbar_y = scroll_y_ratio * @widget_oy
       bitmap.stretch_blt(
         Rect.new(
           @rect.x + @rect.width,

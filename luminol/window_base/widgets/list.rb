@@ -45,9 +45,11 @@ class List < Widget
 
       @selected = mouse_inside_widget?(window)
 
+      STDERR.puts "mx #{mx} my #{my}"
       if Input.trigger?(Input::MOUSELEFT) && @selected
-        @index = (@oy / @item_height)
-        @block.call(@index) if @block
+        block_calling = (@index == (my / @item_height))
+        @index = (my / @item_height)
+        @block.call(@index) if @block && block_calling
         window.draw
       end
     else

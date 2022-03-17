@@ -6,6 +6,8 @@ class PlaneWidget < Widget
   end
 
   def add_widget(id, widget)
+    widget.ox -= x + ox
+    widget.oy -= y + oy
     @widgets[id] = widget
   end
 
