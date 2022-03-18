@@ -18,7 +18,7 @@ class Window_ProjectPicker < Window_Draggable
     )
 
     @picker.on_finish do |path, _|
-      PatchCache.unmount($system.working_dir) # Unmount the current path
+      PathCache.unmount($system.working_dir) # Unmount the current path
       @finished = true
       $system.working_dir = path
       self.close
