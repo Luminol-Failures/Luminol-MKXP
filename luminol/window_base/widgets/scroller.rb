@@ -81,7 +81,7 @@ class Scroller < Widget
       @selected = @widget.selected? if @widget && !@selected
 
       if @selected && @widget
-        if Input.mouse_scroll
+        if Input.mouse_scroll && !@scrolling_x && !@scrolling_y
           if @scroll_x && Input.mouse_scroll_x != 0
             @widget_ox = (@widget_ox + Input.mouse_scroll_x * $system.scroll_speed_multiplier).clamp(0, @widget.width - @rect.width)
           end
@@ -104,8 +104,8 @@ class Scroller < Widget
         if @scroll_x && Input.trigger?(Input::MOUSELEFT)
           x1 = scrollbar_x
           x2 = x1 + scroll_x_width
-          y1 = height
-          y2 = y1 + $system.scrollbar_width
+          y1 = height - $scrollbar_width
+          y2 = height
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
             @scrolling_x = true
@@ -114,8 +114,8 @@ class Scroller < Widget
           end
         end
         if @scroll_y && Input.trigger?(Input::MOUSELEFT)
-          x1 = width
-          x2 = x1 + $system.scrollbar_width
+          x1 = width - $system.scrollbar_width
+          x2 = width
           y1 = scrollbar_y
           y2 = y1 + scroll_y_height
 
@@ -139,7 +139,7 @@ class Scroller < Widget
           @widget_oy = @widget_oy.clamp(0, @widget.height - height)
           window.draw
         else
-          @scrolling_y = false
+          #@scrolling_y = false
         end
       end
     else
