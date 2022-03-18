@@ -21,7 +21,7 @@ class Widget
 
 
   def update(window)
-    return false unless @visible
+    return false unless @visible && window.visible
 
     if @draw_on_next_update
       window.draw

@@ -6,9 +6,10 @@ class PlaneWidget < Widget
   end
 
   def add_widget(id, widget)
-    widget.ox -= x + ox
-    widget.oy -= y + oy
+    widget.ox = x + ox
+    widget.oy = y + oy
     @widgets[id] = widget
+    STDERR.puts widget.inspect
   end
 
   def draw(bitmap)

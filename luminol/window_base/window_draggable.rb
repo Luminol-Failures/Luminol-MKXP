@@ -39,6 +39,9 @@ class Window_Draggable < Window_Selectable
     @closed = true
     self.visible = false
     @titlebar.visible = false
+    @widgets.each do |_, widget|
+      widget.visible = false
+    end
   end
 
   def open
@@ -47,6 +50,9 @@ class Window_Draggable < Window_Selectable
     @titlebar.visible = true
     @minimized = false
     draw_titlebar
+    @widgets.each do |_, widget|
+      widget.visible = true
+    end
   end
 
   def update

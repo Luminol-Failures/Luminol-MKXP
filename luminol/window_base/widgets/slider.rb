@@ -128,7 +128,6 @@ class Slider < Widget
 
     if MKXP.mouse_in_window
       mx, my = get_mouse_pos(window)
-      my -= 32
 
       @selected = mouse_inside_widget?(window)
 

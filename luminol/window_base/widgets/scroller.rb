@@ -4,8 +4,8 @@ class Scroller < Widget
     super(rect, options)
 
     @selected = false
-    @widget_ox = 0
-    @widget_oy = 0
+    @widget_ox = 0.0
+    @widget_oy = 0.0
 
     @scroll_x = false
     @scroll_y = false
@@ -69,10 +69,8 @@ class Scroller < Widget
 
     if @widget
       @widget.update(window)
-      # Check if the widget has offset methods (some need to know the offset, but not all)
-
-      @widget.ox = @widget_ox - x - ox
-      @widget.oy = @widget_oy - y - ox
+      @widget.ox = @widget_ox + self.ox - x
+      @widget.oy = @widget_oy + self.oy - y
 
     end
     if MKXP.mouse_in_window

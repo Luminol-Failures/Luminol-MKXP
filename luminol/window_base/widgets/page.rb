@@ -125,7 +125,8 @@ class Page < Widget
 
   def add_widget(widget, page)
     widget.clipped_region = @rect if widget.respond_to?(:clipped_region) # Check if widget has a clipped_region method
-    widget.oy -= 16 + y
+    widget.oy = -16 - y
+    STDERR.puts widget.inspect
     widget.visible = false
 
     @widgets << widget
