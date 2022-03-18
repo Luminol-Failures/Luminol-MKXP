@@ -24,7 +24,7 @@ class Window_SoundTest < Window_Draggable
     end
 
     @pitch_slider = Slider.new(Rect.new(156, 148, 32, 128),
-                               min: 50, max: 150, value: 100)
+                               minimum: 50, maximum: 150, value: 100)
 
     @pitch_slider.on_change do |value|
       @pitch = value

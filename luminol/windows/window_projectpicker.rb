@@ -20,7 +20,7 @@ class Window_ProjectPicker < Window_Draggable
     @picker.on_finish do |path, _|
       begin
         PathCache.unmount($system.working_dir) # Unmount the current path
-      rescue Exception => e
+      rescue Exception => e # rubocop:disable Lint/RescueException : We don't care if it fails or with what error
         STDERR.puts e.message
         STDERR.puts e.backtrace
       end
