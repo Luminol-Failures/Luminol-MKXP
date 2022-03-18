@@ -4,39 +4,17 @@ require_relative '../window_base/widgets/page'
 require_relative '../window_base/widgets/list'
 require_relative '../window_base/widgets/scroller'
 require_relative '../window_base/widgets/slider'
-require_relative '../window_base/widgets/button'
+require_relative '../window_base/widgets/textbutton'
 
 require_relative '../subscribers/project'
 
 class Window_SoundTest < Window_Draggable
   def initialize
-    super(0, 0, 270, 470, 'Sound Test', $system.button(:note))
-    #self.close
-
-    @bgm = ""
-    @se = ""
-    @bgs = ""
-    @me = ""
+    super(0, 0, 270, 330, 'Sound Test', $system.button(:note))
+    self.close
 
     @volume = 100
-
-    @bgm_plane = PlaneWidget.new(Rect.new(0, 0, width - 32, height - 64))
-    @bgs_plane = PlaneWidget.new(Rect.new(0, 0, width - 32, height - 64))
-    @me_plane = PlaneWidget.new(Rect.new(0, 0, width - 32, height - 64))
-    @se_plane = PlaneWidget.new(Rect.new(0, 0, width - 32, height - 64))
-
-    @page = Page.new(Rect.new(0, 0, width - 32, height - 32))
-    @page.add_widget(@bgm_plane, "BGM")
-    @page.add_widget(@bgs_plane, "BGS")
-    @page.add_widget(@me_plane, "ME")
-    @page.add_widget(@se_plane, "SE")
-
-    @bgm_list = List.new(Rect.new(0, 0, 128, 256), items: [])
-    @bgm_scroller = Scroller.new(Rect.new(16, 16, 128, 256))
-    @bgm_scroller.add_widget(@bgm_list)
-    @bgm_plane.add_widget(:scroller, @bgm_scroller)
-
-    add_widget(:page, @page)
+    @pitch = 100
 
     @volume_slider = Slider.new(Rect.new(156, 16, 32, 128),
                                 min: 0, max: 100, value: 100)
@@ -52,22 +30,58 @@ class Window_SoundTest < Window_Draggable
       @pitch = value
     end
 
-    @bgm_plane.add_widget(:volume, @volume_slider)
-    @bgm_plane.add_widget(:pitch, @pitch_slider)
+    @page = Page.new(Rect.new(0, 0, width - 32, height - 32))
 
-    $projectsignal.on_call do |path|
-      begin 
-        @bgm_list.items = Dir.children(path + "/Audio/BGM/")
-      rescue 
-        @bgm_list.items = []
-        print "Audio/BGM/ missing!"
-      end
-      draw
+    %w[bgm bgs se me].each do |entity|
+      e = <<~CHANNELSTRING
+        @#{entity} = ""
+        @#{entity}_plane = PlaneWidget.new(Rect.new(0, 0, width - 32, height - 64))
+        @page.add_widget(@#{entity}_plane, "#{entity.upcase}")
+        @#{entity}_list = List.new(Rect.new(0, 0, 128, 256), items: [])
+        @#{entity}_scroller = Scroller.new(Rect.new(16, 16, 128, 256))
+        @#{entity}_scroller.add_widget(@#{entity}_list)
+        @#{entity}_plane.add_widget(:scroller, @#{entity}_scroller)
+        @#{entity}_plane.add_widget(:volume, @volume_slider)
+        @#{entity}_plane.add_widget(:pitch, @pitch_slider)
+
+        @#{entity}_list.on_select do |item, _|
+          print "FILE MISSING!" unless File.exist?($system.working_dir + "/Audio/#{entity.upcase}/" + item)
+          @#{entity} = item
+          draw
+        end
+
+        @#{entity}_play_button = TextButton.new(Rect.new(198, 16, 128, 32),
+                                  text: 'Play')
+        @#{entity}_stop_button = TextButton.new(Rect.new(198, 46, 128, 32),
+                                  text: 'Stop')
+
+        @#{entity}_play_button.on_click do
+          next if @#{entity}.nil? || @#{entity}.empty?
+          Audio.#{entity}_play("Audio/#{entity.upcase}/" + @#{entity}, @volume, @pitch)
+        end
+
+        @#{entity}_stop_button.on_click do
+          Audio.#{entity}_stop
+          @#{entity} = ""
+        end
+
+        @#{entity}_plane.add_widget(:play, @#{entity}_play_button)
+        @#{entity}_plane.add_widget(:stop, @#{entity}_stop_button)
+      CHANNELSTRING
+      eval(e)
     end
 
-    @bgm_list.on_select do |item, _|
-      print "FILE MISSING!" unless File.exist?($system.working_dir + "/Audio/BGM/" + item)
-      @bgm = item
+    add_widget(:page, @page)
+
+    $projectsignal.on_call do |path|
+      %w[bgm bgs se me].each do |entity|
+        begin
+          eval("@#{entity}_list.items = Dir.children(path + \"/Audio/#{entity.upcase}/\")")
+        rescue
+          eval("@#{entity}_list.items = []")
+          print "Audio/#{entity.upcase}/ missing!"
+        end
+      end
       draw
     end
   end

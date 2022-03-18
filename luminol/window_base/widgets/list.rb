@@ -49,6 +49,7 @@ class List < Widget
         block_calling = (@index == (my / @item_height))
         @index = (my / @item_height)
         @block.call(@items[@index], @index) if @block && block_calling
+        @block2.call(@items[@index], @index) if @block2
         window.draw
       end
     else
@@ -82,8 +83,12 @@ class List < Widget
     bitmap.font = bfont
   end
 
-  def on_select(&block)
+  def on_double_click(&block)
     @block = block
+  end
+
+  def on_select(&block)
+    @block2 = block
   end
 
   def width

@@ -94,7 +94,7 @@ class Page < Widget
                        (text_width / 16.0).ceil
                      end
 
-      bitmap.blt(last_x, 0, pageleft, rect16)
+      bitmap.blt(last_x, y, pageleft, rect16)
       (boxes_needed - 2).times do |i|
         bitmap.blt(
           x + 16 + (i * 16) + last_x,
@@ -103,7 +103,7 @@ class Page < Widget
           rect16
         )
       end
-      bitmap.blt(last_x + (boxes_needed * 16) - 16, 0, pageright, rect16)
+      bitmap.blt(last_x + (boxes_needed * 16) - 16, y, pageright, rect16)
 
       bitmap.font.color = if @index == index
                             Color.new(255, 255, 255)

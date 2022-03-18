@@ -19,9 +19,10 @@ class Widget
     @draw_on_next_update = false
   end
 
+
   def update(window)
     return false unless @visible
-    
+
     if @draw_on_next_update
       window.draw
       @draw_on_next_update = false
@@ -30,6 +31,7 @@ class Widget
     # Dummy method to be overridden by subclasses
     true
   end
+  alias widget_origin_update update
 
   def draw(_bitmap)
     return false unless @visible
@@ -37,6 +39,7 @@ class Widget
     # Dummy method to be overridden by subclasses
     true
   end
+  alias widget_origin_draw draw
 
   def selected?
     @selected && @visible
