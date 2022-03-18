@@ -18,7 +18,12 @@ class Window_ProjectPicker < Window_Draggable
     )
 
     @picker.on_finish do |path, _|
-      PathCache.unmount($system.working_dir) # Unmount the current path
+      begin
+        PathCache.unmount($system.working_dir) # Unmount the current path
+      rescue Exception => e
+        STDERR.puts e.message
+        STDERR.puts e.backtrace
+      end
       @finished = true
       $system.working_dir = path
       self.close
