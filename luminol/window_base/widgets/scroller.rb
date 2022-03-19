@@ -139,7 +139,7 @@ class Scroller < Widget
           @widget_oy = @widget_oy.clamp(0, @widget.height - height)
           window.draw
         else
-          #@scrolling_y = false
+          @scrolling_y = false
         end
       end
     else
