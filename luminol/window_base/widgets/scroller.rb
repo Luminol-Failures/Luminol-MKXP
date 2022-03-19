@@ -104,7 +104,7 @@ class Scroller < Widget
         if @scroll_x && Input.trigger?(Input::MOUSELEFT)
           x1 = scrollbar_x
           x2 = x1 + scroll_x_width
-          y1 = height - $scrollbar_width
+          y1 = height - $system.scrollbar_width
           y2 = height
 
           if mx >= x1 && mx <= x2 && my >= y1 && my <= y2
