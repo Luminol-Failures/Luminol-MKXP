@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start Luminol",
+            "type": "shell",
+            "command": "./start_luminol",
+            "problemMatcher": []
+        }
+    ]
+}
