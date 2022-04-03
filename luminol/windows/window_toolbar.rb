@@ -2,6 +2,7 @@ require_relative "../window_base/window_draggable"
 require_relative "../window_base/widgets/button"
 
 require_relative "window_projectpicker"
+require_relative "window_maplist"
 require_relative 'window_soundtest'
 
 class Window_ToolBar < Window_Selectable
@@ -16,6 +17,7 @@ class Window_ToolBar < Window_Selectable
     end
 
     @projectpicker = Window_ProjectPicker.new
+    @maplist = Window_MapList.new
     @soundtest = Window_SoundTest.new
 
     @toolbar_buttons = {
@@ -29,6 +31,12 @@ class Window_ToolBar < Window_Selectable
         pressed_icon: $system.button(:note),
         unpressed_icon: $system.button(:note),
         disabled: true
+      ),
+      maplist: Button.new(
+        Rect.new(72, 0, 32, 32),
+        pressed_icon: $system.button(:file),
+        unpressed_icon: $system.button(:file),
+        disable: false
       )
     }
 
@@ -42,6 +50,11 @@ class Window_ToolBar < Window_Selectable
       @soundtest.draw
     end
 
+    @toolbar_buttons[:maplist].on_click do |state|
+      @maplist.open
+      @maplist.draw
+    end
+
     @toolbar_buttons.each do |id, button|
       self.add_widget(id, button)
     end
@@ -51,6 +64,7 @@ class Window_ToolBar < Window_Selectable
     super
     @projectpicker.update
     @soundtest.update
+    @maplist.update
 
     if project_selection_finished && @toolbar_buttons[:soundtest].disabled
       @toolbar_buttons[:soundtest].disabled = false
