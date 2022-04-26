@@ -1,4 +1,4 @@
-require_relative 'widget'
+require_relative "widget"
 
 class Page < Widget
   attr_accessor :clipped_region
@@ -30,10 +30,10 @@ class Page < Widget
         @pages.each do |page|
           text_width = @refbitmap.text_size(page).width
           boxes_needed = if text_width < 32
-                           2
-                         else
-                           (text_width / 16.0).ceil
-                         end
+              2
+            else
+              (text_width / 16.0).ceil
+            end
 
           x1 = last_x
           x2 = x1 + boxes_needed * 16
@@ -68,7 +68,7 @@ class Page < Widget
     topbar = Bitmap.new(width, 32)
 
     construct_topbar(topbar)
-    bitmap.fill_rect(x, y, width, height, Color.new(28 , 28, 28))
+    bitmap.fill_rect(x, y, width, height, Color.new(28, 28, 28))
     @widgets[@index]&.draw(contents)
 
     bitmap.blt(x, y + 16, contents, @rect)
@@ -83,16 +83,16 @@ class Page < Widget
     bitmap.font = @refbitmap.font
 
     last_x = 0
-    rect16 =  Rect.new(0, 0, 16, 16)
+    rect16 = Rect.new(0, 0, 16, 16)
 
     @pages.each_with_index do |page, index|
       text_width = bitmap.text_size(page).width
 
       boxes_needed = if text_width < 32
-                       2
-                     else
-                       (text_width / 16.0).ceil
-                     end
+          2
+        else
+          (text_width / 16.0).ceil
+        end
 
       bitmap.blt(last_x, y, pageleft, rect16)
       (boxes_needed - 2).times do |i|
@@ -106,10 +106,10 @@ class Page < Widget
       bitmap.blt(last_x + (boxes_needed * 16) - 16, y, pageright, rect16)
 
       bitmap.font.color = if @index == index
-                            Color.new(255, 255, 255)
-                          else
-                            Color.new(128, 128, 128)
-                          end
+          Color.new(255, 255, 255)
+        else
+          Color.new(128, 128, 128)
+        end
 
       bitmap.draw_text(
         x + last_x + 4,
@@ -126,7 +126,6 @@ class Page < Widget
   def add_widget(widget, page)
     widget.clipped_region = @rect if widget.respond_to?(:clipped_region) # Check if widget has a clipped_region method
     widget.oy = -16 - y
-    STDERR.puts widget.inspect
     widget.visible = false
 
     @widgets << widget

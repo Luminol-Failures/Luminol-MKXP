@@ -1,4 +1,5 @@
-require_relative 'widget'
+require_relative "widget"
+
 class PlaneWidget < Widget
   def initialize(rect, options = {})
     super(rect, options)
@@ -9,7 +10,6 @@ class PlaneWidget < Widget
     widget.ox = x + ox
     widget.oy = y + oy
     @widgets[id] = widget
-    STDERR.puts widget.inspect
   end
 
   def draw(bitmap)
